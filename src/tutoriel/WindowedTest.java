@@ -88,16 +88,17 @@ public class WindowedTest
 		volSelection.add(selection);
 		
 		JPanel informationVolSelection = new JPanel();
-		informationVolSelection.setPreferredSize(new Dimension(200,130));
+		informationVolSelection.setPreferredSize(new Dimension(200,200));
 		informationVolSelection.setBorder(BorderFactory.createTitledBorder("Infos vol sélectionné"));
 		informationVolSelection.setLayout(new BoxLayout(informationVolSelection,BoxLayout.Y_AXIS));
 		
 		JLabel id = new JLabel("Identifiant : ");
 		JLabel depart = new JLabel("Depart : ");
-		JLabel arrive = new JLabel("Arrivé : ");
+		JLabel arrive = new JLabel("Arrivée : ");
 		JLabel vitesse = new JLabel("Vitesse : ");
 		JLabel altitude = new JLabel("Altitude : ");
 		JLabel typeAvion = new JLabel("Type avion : ");
+		JButton vueAvionButton = new JButton("Vue Avion");
 		
 		informationVolSelection.add(id);
 		informationVolSelection.add(typeAvion);
@@ -105,15 +106,39 @@ public class WindowedTest
 		informationVolSelection.add(altitude);
 		informationVolSelection.add(depart);
 		informationVolSelection.add(arrive);
+		informationVolSelection.add(vueAvionButton);
 		
 		
+		JPanel affichage = new JPanel();
+		affichage.setPreferredSize(new Dimension(200,200));
+		affichage.setBorder(BorderFactory.createTitledBorder("Affichage"));
+		affichage.setLayout(new FlowLayout());
 		
+		JCheckBox affichageAeroport = new JCheckBox("aéroport",true);
+		JCheckBox affichageAvions = new JCheckBox("avions",true);
+		JCheckBox affichageTrajectoire = new JCheckBox("trajectoire",true);
 		
+		JPanel filtresVol = new JPanel();
+		filtresVol.setPreferredSize(new Dimension(180,100));
+		filtresVol.setBorder(BorderFactory.createTitledBorder("Filtres vols"));
+		filtresVol.setLayout(new BoxLayout(filtresVol,BoxLayout.Y_AXIS));
+		
+		JRadioButton radioButton1 = new JRadioButton("hey");
+		filtresVol.add(radioButton1);
+		
+		affichage.add(affichageAeroport);
+		affichage.add(affichageAvions);
+		affichage.add(affichageTrajectoire);
+		affichage.add(filtresVol);
 		
 		
 		conteneur.add(tempsReel);
 		conteneur.add(volSelection);
 		conteneur.add(informationVolSelection);
+		conteneur.add(affichage);
+		
+		
+		
 		panel.add(conteneur, BorderLayout.WEST);
 		
 		// Add the canvas to the panel
