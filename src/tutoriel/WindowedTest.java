@@ -56,23 +56,20 @@ public class WindowedTest
 		JPanel tempsReel = new JPanel();
 		tempsReel.setLayout(new BorderLayout());
 		tempsReel.setPreferredSize(new Dimension(200,100));
-		tempsReel.setBorder(BorderFactory.createTitledBorder("Temps Réel"));
+		tempsReel.setBorder(BorderFactory.createTitledBorder("Temps"));
 		
-		JPanel playPanel = new JPanel();
 		JButton demarrer=new JButton("Démarrer");
-		JButton pause=new JButton("Pause");
-		playPanel.add(demarrer);
-		playPanel.add(pause);
-		
 		
 		JPanel timePanel = new JPanel();
-		JLabel time = new JLabel(" Facteur temps : ");
-		JTextField inputTime = new JTextField("           ");
+		JLabel time = new JLabel(" temps ");
+		JSlider inputTime = new JSlider(JSlider.HORIZONTAL, 0,10,1);
 		timePanel.add(time);
 		timePanel.add(inputTime);
 		
-		tempsReel.add(playPanel,BorderLayout.NORTH);
-		tempsReel.add(timePanel,BorderLayout.SOUTH);
+		tempsReel.add(demarrer,BorderLayout.NORTH);
+		tempsReel.add(time,BorderLayout.CENTER);
+		tempsReel.add(inputTime,BorderLayout.SOUTH);
+		
 		
 		
 		
@@ -87,12 +84,36 @@ public class WindowedTest
 		dlm.addElement("donne 3");
 		dlm.addElement("donne 4");
 		
+		
 		volSelection.add(selection);
+		
+		JPanel informationVolSelection = new JPanel();
+		informationVolSelection.setPreferredSize(new Dimension(200,130));
+		informationVolSelection.setBorder(BorderFactory.createTitledBorder("Infos vol sélectionné"));
+		informationVolSelection.setLayout(new BoxLayout(informationVolSelection,BoxLayout.Y_AXIS));
+		
+		JLabel id = new JLabel("Identifiant : ");
+		JLabel depart = new JLabel("Depart : ");
+		JLabel arrive = new JLabel("Arrivé : ");
+		JLabel vitesse = new JLabel("Vitesse : ");
+		JLabel altitude = new JLabel("Altitude : ");
+		JLabel typeAvion = new JLabel("Type avion : ");
+		
+		informationVolSelection.add(id);
+		informationVolSelection.add(typeAvion);
+		informationVolSelection.add(vitesse);
+		informationVolSelection.add(altitude);
+		informationVolSelection.add(depart);
+		informationVolSelection.add(arrive);
+		
+		
+		
 		
 		
 		
 		conteneur.add(tempsReel);
 		conteneur.add(volSelection);
+		conteneur.add(informationVolSelection);
 		panel.add(conteneur, BorderLayout.WEST);
 		
 		// Add the canvas to the panel
@@ -116,7 +137,7 @@ public class WindowedTest
 		settings.setVSync(true);
 
 		// TODO : create here a new JMonkeyEngine application
-		canvasApplication = new EarthTest();
+		canvasApplication = new EarthTest(c);
 		
 		// TODO : apply the settings and configure our application
 		// in the same way than in the "public static void main()" method from SimpleApplication
@@ -128,6 +149,7 @@ public class WindowedTest
 		// TODO : Uncomment this line to start the application
 		// NB : this line is used instead of the app.start();
 		canvasApplication.createCanvas(); // create canvas!
+		
 		
 		// TODO : Uncomment the following lines to get the canvas from our application
 		JmeCanvasContext ctx = (JmeCanvasContext) canvasApplication.getContext();

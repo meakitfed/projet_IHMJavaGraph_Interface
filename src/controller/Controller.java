@@ -348,4 +348,15 @@ public class Controller
 			e.printStackTrace();
 		}
 	}
+
+
+
+	/**
+	 * @return the airports
+	 */
+	public ArrayList<Airport> getAirports() 
+	{
+		return airports;
+	}
+	
 }

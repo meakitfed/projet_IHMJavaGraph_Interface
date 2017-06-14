@@ -49,6 +49,15 @@ public class Airport
 	{
 		return country;
 	}
+
+	/**
+	 * @return the geolocation
+	 */
+	public Geolocation getGeolocation() 
+	{
+		return geolocation;
+	}
+	
 	
 	
 	

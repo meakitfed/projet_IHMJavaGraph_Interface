@@ -1,5 +1,7 @@
 package tutoriel;
 
+import java.util.ArrayList;
+
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppState;
 import com.jme3.asset.plugins.ZipLocator;
@@ -12,14 +14,21 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Line;
-import com.jme3.system.AppSettings;
+import com.jme3.scene.shape.Sphere;
+
+import classes.Airport;
+import controller.Controller;
 
 public class EarthTest extends SimpleApplication 
 {
-	public EarthTest()
+	private static final float TEXTURE_LAT_OFFSET = -0.2f;
+	private static final float TEXTURE_LON_OFFSET = 2.8f;
+	private Controller controller;
+	
+	public EarthTest(Controller controller)
 	{
+		this.controller=controller;
 		// TODO Auto-generated constructor stub
 	}
 
@@ -38,6 +47,7 @@ public class EarthTest extends SimpleApplication
 	@Override
 	public void simpleInitApp() 
 	{
+		
 		assetManager.registerLocator("earth.zip",ZipLocator.class);
 		Spatial earth_geom =assetManager.loadModel("earth/Sphere.mesh.xml");
 		Node earth_node = new Node("earth");
@@ -79,8 +89,9 @@ public class EarthTest extends SimpleApplication
 		mat.setColor("Color",ColorRGBA.Green);
 		LinesNode.setMaterial(mat);
 		LinesNode.attachChild(lineGeo);
-		
+		dessinerAeroport(controller.getAirports());
 		rootNode.attachChild(LinesNode);
+		
 		
 		dessineHelice(new Vector3f(0.f,0.f,0.f));
 	}
@@ -96,7 +107,6 @@ public class EarthTest extends SimpleApplication
 			Vector3f newVect = new Vector3f(FastMath.cos(t), t/5.0f, FastMath.sin(t));
 			
 			Node LinesNode= new Node("LinesNode");
-			
 			
 			Line line = new Line(oldVect,newVect);
 			Geometry lineGeo = new Geometry("lineGeo",line);
@@ -115,24 +125,34 @@ public class EarthTest extends SimpleApplication
 			oldVect = newVect;
 		}
 	}
-	
-	public static void main(String[] args) 
+	private static Vector3f geoCoordTo3dCoord(float lat, float lon)
 	{
-		AppSettings settings = new AppSettings(true);
-		settings.setResolution(1280,800);
-		settings.setSamples(8);
-		settings.setFrameRate(60);
-		settings.setVSync(true);
-		
-		EarthTest app = new EarthTest();
-		app.setSettings(settings);
-		app.setShowSettings(false);
-		app.setDisplayStatView(false);
-		app.setDisplayFps(false);
-		//app.createCanvas();
-		app.start();
-		// TODO Auto-generated method stub
-
+		float lat_cor = lat+TEXTURE_LAT_OFFSET;
+		float lon_cor = lon+TEXTURE_LON_OFFSET;
+		return new Vector3f(-FastMath.sin(lon_cor*FastMath.DEG_TO_RAD)
+							*FastMath.cos(lat_cor*FastMath.DEG_TO_RAD),
+							 FastMath.sin(lat_cor*FastMath.DEG_TO_RAD),
+							-FastMath.cos(lon_cor*FastMath.DEG_TO_RAD)
+							*FastMath.cos(lat_cor*FastMath.DEG_TO_RAD)).mult(5);
 	}
+	public void displayAeroport(float latitude,float longitude)
+	{
+		Vector3f v = geoCoordTo3dCoord(latitude, longitude);
+		Sphere sphere = new Sphere(16,8,0.05f);
+		Geometry aeroportGeom = new Geometry("Aeroport",sphere);
+		Material mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+		mat.setColor("Color", ColorRGBA.Blue);
+		aeroportGeom.setMaterial(mat);
+		rootNode.attachChild(aeroportGeom);
+		aeroportGeom.setLocalTranslation(v);
+	}
+	public void dessinerAeroport(ArrayList<Airport> aeroport)
+	{
+		for(Airport a : aeroport)
+		{
+			displayAeroport(a.getGeolocation().getLatitude(),a.getGeolocation().getLongitude());
+		}
+	}
+
 
 }
