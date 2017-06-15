@@ -10,6 +10,7 @@ public class Plane
 	private float horodatageGeolocalisation;
 	private Geolocation geolocation;
 	private boolean grounded;
+	private boolean isArrived;
 	
 	
 	public Plane()
@@ -20,7 +21,7 @@ public class Plane
 		this.horodatageGeolocalisation=-1;
 		this.horodatageSpeed=-1;
 		this.grounded=true;
-		this.geolocation=new Geolocation(-1,-1, -1);
+		this.geolocation=new Geolocation(-1,-1,0);
 	}
 	public Plane(Geolocation geolocation, float speedX,float direction, float horodatageGeolocation,float horodatageSpeed,float speedY, boolean grounded) 
 	{
@@ -31,6 +32,7 @@ public class Plane
 		this.horodatageSpeed=horodatageSpeed;
 		this.grounded=grounded;
 		this.geolocation=geolocation;
+		this.isArrived=false;
 	}
 	
 	
@@ -97,13 +99,41 @@ public class Plane
 
 		return geolocation;
 	}
-
 	/**
-	 * @return the model
+	 * @return the direction
 	 */
+	public float getDirection() 
+	{
+		return direction;
+	}
+	/**
+	 * @return the grounded
+	 */
+	public boolean isGrounded() {
+		return grounded;
+	}
+	/**
+	 * @return the horodatageGeolocalisation
+	 */
+	public float getHorodatageGeolocalisation() 
+	{
+		return horodatageGeolocalisation;
+	}
+	/**
+	 * @return the isArrived
+	 */
+	public boolean isisArrived() 
+	{
+		return isArrived;
+	}
+	/**
+	 * @param isArrived the isArrived to set
+	 */
+	public void setisArrived(boolean isArrived) {
+		this.isArrived = isArrived;
+	}
 	
-	
-	
+
 	
 
 }

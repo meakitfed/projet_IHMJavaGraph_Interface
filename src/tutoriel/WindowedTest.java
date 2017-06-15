@@ -123,7 +123,7 @@ public class WindowedTest
 		filtresVol.setBorder(BorderFactory.createTitledBorder("Filtres vols"));
 		filtresVol.setLayout(new BoxLayout(filtresVol,BoxLayout.Y_AXIS));
 		
-		JRadioButton radioButton1 = new JRadioButton("hey");
+		JRadioButton radioButton1 = new JRadioButton("option 1 affichage");
 		filtresVol.add(radioButton1);
 		
 		affichage.add(affichageAeroport);

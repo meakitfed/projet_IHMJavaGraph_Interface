@@ -17,6 +17,7 @@ public class Controller
 	private long t0;
 	private long currentTime = 0;
 	private String realTimeFile = "src/Data/realtime_flights.dat";
+	private boolean fin = false;
 	
 	
 	/**
@@ -48,8 +49,8 @@ public class Controller
 			while(line != null)
 			{
 				String[] array = line.split("///");
-				float lon= Float.parseFloat(array[3]);
-				float lat = Float.parseFloat(array[4]);
+				float lon= Float.parseFloat(array[4]);
+				float lat = Float.parseFloat(array[3]);
 				airports.add(new Airport(new Geolocation(lon,lat,0),array[0],array[1],array[2]));				
 				line = bufRead.readLine();
 			}
@@ -138,14 +139,17 @@ public class Controller
 	 */
 	public void updateRealTimeFlightsData(String path, long time) 
 	{
-
-		try 
+		if (currentTime + t0  > new Long((long) 1496195547396f))
+		{
+			System.out.println("dernier temps atteint");
+			fin =true;
+		}
+		try 			
 		{
 			FileReader file=new FileReader(path);
 			BufferedReader bufRead = new BufferedReader(file);
 				
-			String line= bufRead.readLine();
-			
+			String line= bufRead.readLine();	
 			
 			while(line != null)
 			{
@@ -154,9 +158,8 @@ public class Controller
 				{
 					if(time == (Long.parseLong(array[0])))
 					{
-						System.out.println("trouvé");
-						float lon= Float.parseFloat(array[2]);
-						float lat = Float.parseFloat(array[3]);
+						float lat = Float.parseFloat(array[2]);
+						float lon= Float.parseFloat(array[3]);
 						float height = Float.parseFloat(array[4]);
 						float speedX = Float.parseFloat(array[5]);
 						float direction = Float.parseFloat(array[6]);
@@ -191,6 +194,8 @@ public class Controller
 					line = bufRead.readLine();
 			}
 			
+			
+			
 			bufRead.close();
 			file.close();
 		}
@@ -201,6 +206,17 @@ public class Controller
 	}
 	
 	
+	
+	
+	/**
+	 * @return the fin
+	 */
+	public boolean isFin() {
+		return fin;
+	}
+
+
+
 	/**
 	 * Cherche le vol d'id entré en parametre dans l'arrayist flights
 	 * 
@@ -358,5 +374,35 @@ public class Controller
 	{
 		return airports;
 	}
+
+
+
+	/**
+	 * @return the flights
+	 */
+	public ArrayList<Flight> getFlights() {
+		return flights;
+	}
+
+
+
+	/**
+	 * @return the currentTime
+	 */
+	public long getCurrentTime() {
+		return currentTime;
+	}
+
+
+
+	/**
+	 * @return the realTimeFile
+	 */
+	public String getRealTimeFile() {
+		return realTimeFile;
+	}
+	
+	
+	
 	
 }

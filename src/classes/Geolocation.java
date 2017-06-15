@@ -45,20 +45,23 @@ public class Geolocation
 	/**
 	 * @return the height
 	 */
-	public float getHeight() {
+	public float getHeight() 
+	{
 		return height;
 	}
 
 	/**
 	 * @param height the height to set
 	 */
-	public void setHeight(float height) {
+	public void setHeight(float height) 
+	{
 		this.height = height;
 	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
+
 	@Override
 	public String toString() {
 		return "Geolocation [latitude=" + latitude + ", longitude=" + longitude + ", height=" + height + "]";
