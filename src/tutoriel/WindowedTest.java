@@ -3,6 +3,7 @@ package tutoriel;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeCanvasContext;
 
+import classes.Flight;
 import controller.Controller;
 
 import java.awt.BorderLayout;
@@ -13,6 +14,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import javax.swing.*;
 
@@ -29,8 +32,10 @@ public class WindowedTest
 	private static JFrame frame;
 	private static JPanel panel;
 	private static Controller c;
+	private static DateFormat shortDateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
+	private static JLabel time = new JLabel();
 	
-	
+
 	private static void createNewJFrame() 
 	{
 
@@ -59,9 +64,26 @@ public class WindowedTest
 		tempsReel.setBorder(BorderFactory.createTitledBorder("Temps"));
 		
 		JButton demarrer=new JButton("Démarrer");
+		demarrer.addActionListener(new ActionListener() 
+		{
+			@Override
+			public void actionPerformed(ActionEvent event) 
+			{
+				JButton button = (JButton) event.getSource();
+				if (button.getText().equals("Démarrer")) 
+				{
+					c.setPause(false);
+					button.setText("Pause");
+				} else 
+				{
+					c.setPause(true);
+					button.setText("Démarrer");
+				}
+			}
+		});
 		
 		JPanel timePanel = new JPanel();
-		JLabel time = new JLabel(" temps ");
+		time = new JLabel("    temps : "+shortDateFormat.format(c.getD()));
 		JSlider inputTime = new JSlider(JSlider.HORIZONTAL, 0,10,1);
 		timePanel.add(time);
 		timePanel.add(inputTime);
@@ -77,15 +99,20 @@ public class WindowedTest
 		volSelection.setPreferredSize(new Dimension(200,130));
 		volSelection.setBorder(BorderFactory.createTitledBorder("Selection Vol"));
 
+		
 		DefaultListModel dlm = new DefaultListModel();
 		JList selection = new JList(dlm);
-		dlm.addElement("donne 1");
-		dlm.addElement("donne 2");
-		dlm.addElement("donne 3");
-		dlm.addElement("donne 4");
+		for(Flight f : c.getFlights())
+		{
+			dlm.addElement("Vol ID : "+f.getId());
+		}
+	
+		JScrollPane scrollPane = new JScrollPane(selection);
+		scrollPane.setViewportView(selection);
+		scrollPane.setPreferredSize(new Dimension(180,100));
 		
 		
-		volSelection.add(selection);
+		volSelection.add(scrollPane);
 		
 		JPanel informationVolSelection = new JPanel();
 		informationVolSelection.setPreferredSize(new Dimension(200,200));
@@ -148,8 +175,30 @@ public class WindowedTest
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+		
 	}
 	
+	
+
+	/**
+	 * @return the time
+	 */
+	public static JLabel getTime() {
+		return time;
+	}
+	
+
+
+
+	/**
+	 * @return the shortDateFormat
+	 */
+	public static DateFormat getShortDateFormat() 
+	{
+		return shortDateFormat;
+	}
+
+
 
 	public static void main(String[] args)
 	{

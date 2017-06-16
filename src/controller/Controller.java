@@ -3,6 +3,7 @@ package controller;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.Date;
 import java.util.ArrayList;
 
 import classes.Airport;
@@ -18,6 +19,8 @@ public class Controller
 	private long currentTime = 0;
 	private String realTimeFile = "src/Data/realtime_flights.dat";
 	private boolean fin = false;
+	private boolean pause=true;
+	Date d;
 	
 	
 	/**
@@ -32,6 +35,7 @@ public class Controller
 		getFlightData("src/Data/flights.dat"); 
 		getT0("src/Data/realtime_flights.dat");
 		updateRealTimeFlightsData("src/Data/realtime_flights.dat", t0);
+		d = new Date(getRealCurrentTime());
 	}
 	
 	
@@ -401,6 +405,50 @@ public class Controller
 	public String getRealTimeFile() {
 		return realTimeFile;
 	}
+
+
+
+	/**
+	 * @return the pause
+	 */
+	public boolean isPause() 
+	{
+		return pause;
+	}
+
+
+
+	/**
+	 * @param pause the pause to set
+	 */
+	public void setPause(boolean pause) 
+	{
+		this.pause = pause;
+	}
+
+
+
+	/**
+	 * @return the d
+	 */
+	public Date getD() {
+		return d;
+	}
+
+
+
+	/**
+	 * @param d the d to set
+	 */
+	public void setD(Date d) 
+	{
+		this.d = d;
+	}
+	public long getRealCurrentTime()
+	{
+		return currentTime+t0;
+	}
+	
 	
 	
 	

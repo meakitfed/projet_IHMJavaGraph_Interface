@@ -1,5 +1,6 @@
 package tutoriel;
 
+import java.sql.Date;
 import java.util.ArrayList;
 
 import com.jme3.app.SimpleApplication;
@@ -45,19 +46,19 @@ public class EarthTest extends SimpleApplication
 	@Override
 	public void simpleUpdate(float tpf)
 	{
-		if(!controller.isFin())
+		if(!controller.isPause())
 		{
-			controller.incrementCurrentTime(500000);
+			System.out.println();
+			controller.incrementCurrentTime(50000);
+			controller.setD(new Date(controller.getRealCurrentTime()));
+			WindowedTest.getTime().setText("    temps : "+WindowedTest.getShortDateFormat().format(controller.getD()));
 			controller.updateRealTimeFlightsData(controller.getRealTimeFile(), controller.getLastUpdateTime(controller.getRealTimeFile()));
 			paintPlane(controller.getFlights());	
 		}
 		else
 		{
-			for(Flight f : controller.getFlights())
-			{
-				rootNode.detachChildNamed(f.getId());
-			}
-			
+		
+			paintPlane(controller.getFlights());	
 		}
 	}
 
