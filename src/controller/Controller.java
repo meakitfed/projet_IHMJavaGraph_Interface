@@ -234,6 +234,58 @@ public class Controller
 	}
 
 
+	/**
+	 * retourne un arraylist de geoloc qui contient tos les positions par ou passe le vol
+	 * @param f  vol
+	 * @return  path  associe au vol
+	 */
+	public ArrayList<Geolocation> getPathOf(Flight f)
+	{
+		ArrayList<Geolocation> toReturn = new ArrayList<Geolocation>();
+		
+		try 			
+		{
+			FileReader file=new FileReader(realTimeFile);
+			LineNumberReader bufRead = new LineNumberReader(file);
+				
+			String line= bufRead.readLine();
+					
+			
+			while(line != null)
+			{
+				String[] array = line.split("///");
+				try
+				{
+					if(f.getId().equals(array[1].trim())) 
+					{
+						float lat = Float.parseFloat(array[2]);
+						float lon= Float.parseFloat(array[3]);
+						float height = Float.parseFloat(array[4]);
+						toReturn.add(new Geolocation(lon, lat, height));
+					}
+		
+				}
+				catch(NumberFormatException e)
+				{
+					System.err.println("Données non conventionnelles");
+				}
+					
+				line = bufRead.readLine();
+			}
+			
+			
+			
+			bufRead.close();
+			file.close();
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+		return toReturn;
+	}
+	
 
 	/**
 	 * Cherche le vol d'id entré en parametre dans l'arrayist flights

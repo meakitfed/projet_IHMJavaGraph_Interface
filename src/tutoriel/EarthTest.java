@@ -110,7 +110,7 @@ public class EarthTest extends SimpleApplication
 		rootNode.attachChild(LinesNode);
 		
 		
-		dessineHelice(new Vector3f(0.f,0.f,0.f));
+		//dessineHelice(new Vector3f(0.f,0.f,0.f));
 	}
 
 	public void dessineHelice(Vector3f vect)
@@ -129,8 +129,7 @@ public class EarthTest extends SimpleApplication
 			Geometry lineGeo = new Geometry("lineGeo",line);
 			Material mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
 			Material mat2 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-			lineGeo.setMaterial(mat2);						System.out.println("trouvé");
-			
+			lineGeo.setMaterial(mat2);						
 			mat.getAdditionalRenderState().setLineWidth(4.0f);
 			mat.setColor("Color",ColorRGBA.Green);
 			LinesNode.setMaterial(mat);
@@ -142,6 +141,22 @@ public class EarthTest extends SimpleApplication
 			oldVect = newVect;
 		}
 	}
+	
+	
+	//A TERMINER EN SINSPIRER DE HELICE
+	/*
+	public void drawPath(ArrayList<Geolocation> path )
+	{
+		Vector3f oldVect = geoCoordTo3dCoord(path.get(0).getLatitude(), path.get(0).getLongitude());
+		
+		for(int i = 1 ; i< path.size()-1; i++)
+		{
+			
+		}
+	}
+	*/
+	
+	
 	private static Vector3f geoCoordTo3dCoord(float lat, float lon)
 	{
 		float lat_cor = lat+TEXTURE_LAT_OFFSET;
