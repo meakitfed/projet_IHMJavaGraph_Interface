@@ -26,6 +26,7 @@ public class Controller
 	private int indiceLigne = 0;
 	private boolean pause=true;
 	private int speedTime;
+	private Flight volSelection;
 	Date d;
 	
 	
@@ -483,6 +484,38 @@ public class Controller
 	{
 		return currentTime+t0;
 	}
+
+
+
+	/**
+	 * @return the volSelection
+	 */
+	public Flight getVolSelection() 
+	{
+		return volSelection;
+	}
+
+
+
+	/**
+	 * @param volSelection the volSelection to set
+	 */
+	public void setVolSelection(Flight volSelection) 
+	{
+		this.volSelection = volSelection;
+	}
+	public Flight findFlightId(String id)
+	{
+		for(Flight f : flights)
+		{
+			if(f.getId().equals(id))
+			{
+				return f;
+			}
+		}
+		return null;
+	}
+	
 	
 	
 	

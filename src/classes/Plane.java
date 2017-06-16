@@ -132,6 +132,21 @@ public class Plane
 	public void setisArrived(boolean isArrived) {
 		this.isArrived = isArrived;
 	}
+	/**
+	 * @return the speedX
+	 */
+	public float getSpeedX() 
+	{
+		return speedX;
+	}
+	/**
+	 * @return the speedY
+	 */
+	public float getSpeedY() 
+	{
+		return speedY;
+	}
+	
 	
 
 	

@@ -7,6 +7,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppState;
 import com.jme3.asset.plugins.ZipLocator;
 import com.jme3.input.ChaseCamera;
+import com.jme3.input.controls.ActionListener;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -56,7 +57,6 @@ public class EarthTest extends SimpleApplication
 		}
 		else
 		{
-		
 			paintPlane(controller.getFlights());	
 		}
 	}
@@ -110,40 +110,9 @@ public class EarthTest extends SimpleApplication
 		LinesNode.attachChild(lineGeo);
 		paintAirport(controller.getAirports());
 		rootNode.attachChild(LinesNode);
-		
-		
-		dessineHelice(new Vector3f(0.f,0.f,0.f));
+
 	}
 
-	public void dessineHelice(Vector3f vect)
-	{
-		Vector3f oldVect = vect;
-		
-		for(int i=0; i<10000;i++)
-		{
-			float t = i/5.f;
-			
-			Vector3f newVect = new Vector3f(FastMath.cos(t), t/5.0f, FastMath.sin(t));
-			
-			Node LinesNode= new Node("LinesNode");
-			
-			Line line = new Line(oldVect,newVect);
-			Geometry lineGeo = new Geometry("lineGeo",line);
-			Material mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-			Material mat2 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-			lineGeo.setMaterial(mat2);						System.out.println("trouvé");
-			
-			mat.getAdditionalRenderState().setLineWidth(4.0f);
-			mat.setColor("Color",ColorRGBA.Green);
-			LinesNode.setMaterial(mat);
-			LinesNode.attachChild(lineGeo);
-			
-			rootNode.attachChild(LinesNode);
-			
-			
-			oldVect = newVect;
-		}
-	}
 	private static Vector3f geoCoordTo3dCoord(float lat, float lon)
 	{
 		float lat_cor = lat+TEXTURE_LAT_OFFSET;
@@ -202,24 +171,35 @@ public class EarthTest extends SimpleApplication
 				n.rotate((float)Math.PI/2,0,0);
 				n.rotate(0,(float)(f.getPlane().getDirection()*(Math.PI/180)),0);
 			}
-			
-			
 		}
-	
-		
-		
-		
 	}
-	
-	
+
 	public void paintPlane(ArrayList<Flight> flights)
 	{
-		for(Flight f : flights)
+		if(controller.getVolSelection()==null)
 		{
-			displayPlane(f);
+			for(Flight f : flights)
+			{
+				displayPlane(f);
+			}
+		}
+		else
+		{
+			suprOtherNodeFlight(controller.getVolSelection().getId());
+			displayPlane(controller.getVolSelection());
+		}
+		
+	}
+	public void suprOtherNodeFlight(String id)
+	{
+		for(Flight f : controller.getFlights())
+		{
+			if(f.getId()!=id && rootNode.getChild(f.getId())!=null)
+			{
+				rootNode.getChild(f.getId()).removeFromParent();
+			}
 		}
 	}
-	
 	public void paintAirport(ArrayList<Airport> aeroport)
 	{
 		
