@@ -12,7 +12,7 @@ public class Geolocation
 	private float latitude;
 	private float longitude;
 	private float height;
-	private static final float DIST_LANDING = 0.1f;
+	private static final float DIST_LANDING = 1.f;
 
 	
 	public Geolocation(float longitude,float latitude, float height) 

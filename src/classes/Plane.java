@@ -10,7 +10,7 @@ public class Plane
 	private float horodatageGeolocalisation;
 	private Geolocation geolocation;
 	private boolean grounded;
-	private boolean isArrived;
+	private boolean isArrived=false;
 	
 	
 	public Plane()
@@ -21,7 +21,7 @@ public class Plane
 		this.horodatageGeolocalisation=-1;
 		this.horodatageSpeed=-1;
 		this.grounded=true;
-		this.geolocation=new Geolocation(-1,-1,0);
+		this.geolocation=new Geolocation(-1,-1,-100);
 	}
 	public Plane(Geolocation geolocation, float speedX,float direction, float horodatageGeolocation,float horodatageSpeed,float speedY, boolean grounded) 
 	{
