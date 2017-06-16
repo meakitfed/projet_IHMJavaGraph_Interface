@@ -48,8 +48,7 @@ public class EarthTest extends SimpleApplication
 	{
 		if(!controller.isPause())
 		{
-			System.out.println();
-			controller.incrementCurrentTime(50000);
+			controller.incrementCurrentTime(10000*controller.getSpeedTime());
 			controller.setD(new Date(controller.getRealCurrentTime()));
 			WindowedTest.getTime().setText("    temps : "+WindowedTest.getShortDateFormat().format(controller.getD()));
 			controller.updateRealTimeFlightsData(controller.getRealTimeFile(), controller.getLastUpdateTime(controller.getRealTimeFile()));

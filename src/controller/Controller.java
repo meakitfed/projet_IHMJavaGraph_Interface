@@ -20,6 +20,7 @@ public class Controller
 	private String realTimeFile = "src/Data/realtime_flights.dat";
 	private boolean fin = false;
 	private boolean pause=true;
+	private int speedTime;
 	Date d;
 	
 	
@@ -36,6 +37,7 @@ public class Controller
 		getT0("src/Data/realtime_flights.dat");
 		updateRealTimeFlightsData("src/Data/realtime_flights.dat", t0);
 		d = new Date(getRealCurrentTime());
+		speedTime=5;
 	}
 	
 	
@@ -414,6 +416,25 @@ public class Controller
 	public boolean isPause() 
 	{
 		return pause;
+	}
+	
+
+
+
+	/**
+	 * @return the speedTime
+	 */
+	public int getSpeedTime() {
+		return speedTime;
+	}
+
+
+
+	/**
+	 * @param speedTime the speedTime to set
+	 */
+	public void setSpeedTime(int speedTime) {
+		this.speedTime = speedTime;
 	}
 
 

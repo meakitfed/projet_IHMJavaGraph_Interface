@@ -84,7 +84,7 @@ public class WindowedTest
 		
 		JPanel timePanel = new JPanel();
 		time = new JLabel("    temps : "+shortDateFormat.format(c.getD()));
-		JSlider inputTime = new JSlider(JSlider.HORIZONTAL, 0,10,1);
+		JSlider inputTime = new JSlider(JSlider.HORIZONTAL, 0,10,c.getSpeedTime());
 		timePanel.add(time);
 		timePanel.add(inputTime);
 		
