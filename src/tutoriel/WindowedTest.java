@@ -10,6 +10,7 @@ import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -18,6 +19,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class WindowedTest 
 {
@@ -34,8 +39,10 @@ public class WindowedTest
 	private static Controller c;
 	private static DateFormat shortDateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
 	private static JLabel time = new JLabel();
+	private static JList selection;
+	private static JPanel informationVolSelection;
 	
-
+	
 	private static void createNewJFrame() 
 	{
 
@@ -45,13 +52,27 @@ public class WindowedTest
 			@Override
 			public void windowClosed(WindowEvent e) 
 			{
-				// TODO : Uncomment this in order to stop the application
-				// when the windows will be closed.
 				canvasApplication.stop();
 			}
 		});
 		
+		
 		panel = new JPanel(new BorderLayout());
+		/*panel.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				System.out.println("CREATE HEATMAP");
+				
+				canvasApplication.enqueue(new Callable<Object>(
+						public Object call() throws Exception 
+						{
+							canvasApplication.addHeatMap();
+							return null;
+						}}
+			);
+			}
+		});*/
 
 		// Create the menus
 		JPanel conteneur = new JPanel();
@@ -84,7 +105,19 @@ public class WindowedTest
 		
 		JPanel timePanel = new JPanel();
 		time = new JLabel("    temps : "+shortDateFormat.format(c.getD()));
-		JSlider inputTime = new JSlider(JSlider.HORIZONTAL, 0,10,1);
+		JSlider inputTime = new JSlider(JSlider.HORIZONTAL, 0,100,c.getSpeedTime());
+		inputTime.addChangeListener(new ChangeListener() 
+		{
+			@Override
+			public void stateChanged(ChangeEvent e) 
+			{
+				JSlider source = (JSlider)e.getSource();
+			    if (!source.getValueIsAdjusting()) 
+			    {
+			        c.setSpeedTime(source.getValue()) ;
+			    }	
+			}
+		});
 		timePanel.add(time);
 		timePanel.add(inputTime);
 		
@@ -93,19 +126,57 @@ public class WindowedTest
 		tempsReel.add(inputTime,BorderLayout.SOUTH);
 		
 		
-		
-		
 		JPanel volSelection = new JPanel();
 		volSelection.setPreferredSize(new Dimension(200,130));
 		volSelection.setBorder(BorderFactory.createTitledBorder("Selection Vol"));
 
 		
 		DefaultListModel dlm = new DefaultListModel();
-		JList selection = new JList(dlm);
+		selection = new JList(dlm);
+		dlm.addElement("Aucune sélection");
 		for(Flight f : c.getFlights())
 		{
-			dlm.addElement("Vol ID : "+f.getId());
+			dlm.addElement(f.getId());
 		}
+		
+		JLabel id = new JLabel(" Identifiant : ");
+		JLabel depart = new JLabel(" Depart : ");
+		JLabel arrive = new JLabel(" Arrivée : ");
+		JLabel vitesse = new JLabel(" Vitesse : ");
+		JLabel altitude = new JLabel(" Altitude : ");
+		JLabel typeAvion = new JLabel(" Type avion : ");
+		JButton vueAvionButton = new JButton(" Vue Avion");
+		
+		selection.addListSelectionListener(new ListSelectionListener() 
+		{
+            @Override
+            public void valueChanged(ListSelectionEvent e) 
+            {
+                if (!e.getValueIsAdjusting()) 
+                {
+                    c.setVolSelection(c.getFlightByID((String)selection.getSelectedValue()));
+                    Flight f= c.getVolSelection();
+                    if(f!=null)
+                    {
+                    	id.setText(" Identifiant : "+f.getId());
+                		depart.setText(" Depart : "+f.getDeparture().getCityName());
+                		arrive.setText(" Arrivée : "+f.getArrival().getCityName());
+                		vitesse.setText(" Vitesse : "+(f.getPlane().getSpeedX()+f.getPlane().getSpeedY())+" km/h");
+                		altitude.setText(" Altitude : "+f.getPlane().getGeolocation().getHeight()+" m ");
+                		typeAvion.setText(" Type avion : "+f.getModelAvion());
+                    }
+                    else
+                    {
+                    	id.setText(" Identifiant : ");
+                		depart.setText(" Depart : ");
+                		arrive.setText(" Arrivée : ");
+                		vitesse.setText(" Vitesse : ");
+                		altitude.setText(" Altitude : ");
+                		typeAvion.setText(" Type avion : ");
+                    }
+                }
+            }
+        });
 	
 		JScrollPane scrollPane = new JScrollPane(selection);
 		scrollPane.setViewportView(selection);
@@ -114,18 +185,11 @@ public class WindowedTest
 		
 		volSelection.add(scrollPane);
 		
-		JPanel informationVolSelection = new JPanel();
+		informationVolSelection = new JPanel();
 		informationVolSelection.setPreferredSize(new Dimension(200,200));
 		informationVolSelection.setBorder(BorderFactory.createTitledBorder("Infos vol sélectionné"));
-		informationVolSelection.setLayout(new BoxLayout(informationVolSelection,BoxLayout.Y_AXIS));
+		informationVolSelection.setLayout(new GridLayout(7,1,5,0));
 		
-		JLabel id = new JLabel("Identifiant : ");
-		JLabel depart = new JLabel("Depart : ");
-		JLabel arrive = new JLabel("Arrivée : ");
-		JLabel vitesse = new JLabel("Vitesse : ");
-		JLabel altitude = new JLabel("Altitude : ");
-		JLabel typeAvion = new JLabel("Type avion : ");
-		JButton vueAvionButton = new JButton("Vue Avion");
 		
 		informationVolSelection.add(id);
 		informationVolSelection.add(typeAvion);
@@ -134,6 +198,7 @@ public class WindowedTest
 		informationVolSelection.add(depart);
 		informationVolSelection.add(arrive);
 		informationVolSelection.add(vueAvionButton);
+		
 		
 		
 		JPanel affichage = new JPanel();
@@ -145,12 +210,47 @@ public class WindowedTest
 		JCheckBox affichageAvions = new JCheckBox("avions",true);
 		JCheckBox affichageTrajectoire = new JCheckBox("trajectoire",true);
 		
+		affichageAvions.addActionListener(new ActionListener() 
+		{
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				if(c.isPrintPlane()==true)
+				{
+					c.setPrintPlane(false);
+					c.setAlreadyPrintAirport(false);
+				}
+				else
+				{
+					c.setPrintPlane(true);
+				}
+				
+			}
+		});
+		affichageAeroport.addActionListener(new ActionListener() 
+		{
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				if(c.isPrintPlane()==true)
+				{
+					c.setPrintAirport(false);
+				}
+				else
+				{
+					c.setPrintAirport(true);
+				}
+				
+			}
+		});
+		
 		JPanel filtresVol = new JPanel();
 		filtresVol.setPreferredSize(new Dimension(180,100));
 		filtresVol.setBorder(BorderFactory.createTitledBorder("Filtres vols"));
 		filtresVol.setLayout(new BoxLayout(filtresVol,BoxLayout.Y_AXIS));
 		
 		JRadioButton radioButton1 = new JRadioButton("option 1 affichage");
+		
 		filtresVol.add(radioButton1);
 		
 		affichage.add(affichageAeroport);
@@ -196,6 +296,16 @@ public class WindowedTest
 	public static DateFormat getShortDateFormat() 
 	{
 		return shortDateFormat;
+	}
+	
+
+
+
+	/**
+	 * @return the informationVolSelection
+	 */
+	public static JPanel getInformationVolSelection() {
+		return informationVolSelection;
 	}
 
 

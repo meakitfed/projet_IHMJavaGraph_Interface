@@ -7,6 +7,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppState;
 import com.jme3.asset.plugins.ZipLocator;
 import com.jme3.input.ChaseCamera;
+import com.jme3.input.controls.ActionListener;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -43,19 +44,43 @@ public class EarthTest extends SimpleApplication
 	@Override
 	public void simpleUpdate(float tpf)
 	{
-		if(!controller.isPause())
+		if(controller.isPrintPlane())
 		{
-			System.out.println();
-			controller.incrementCurrentTime(500000);
-			controller.setD(new Date(controller.getRealCurrentTime()));
-			WindowedTest.getTime().setText("    temps : "+WindowedTest.getShortDateFormat().format(controller.getD()));
-			controller.updateRealTimeFlightsData(controller.getRealTimeFile(), controller.getLastUpdateTime(controller.getRealTimeFile()));
-			paintPlanes(controller.getFlights());
+			if(!controller.isPause())
+			{
+				controller.incrementCurrentTime(10000*controller.getSpeedTime());
+				controller.setD(new Date(controller.getRealCurrentTime()));
+				WindowedTest.getTime().setText("    temps : "+WindowedTest.getShortDateFormat().format(controller.getD()));
+				controller.updateRealTimeFlightsData(controller.getRealTimeFile(), controller.getLastUpdateTime(controller.getRealTimeFile()));
+				paintPlanes(controller.getFlights());
+			}
+			else
+			{
+				paintPlanes(controller.getFlights());	
+			}
 		}
 		else
 		{
-			paintPlanes(controller.getFlights());	
+			suprOtherNodeFlight(null);
 		}
+		if(controller.isPrintAirport() && !controller.isAlreadyPrintAirport())
+		{
+			paintAirport(controller.getAirports());
+			controller.setAlreadyPrintAirport(true);
+		}
+		else
+		{
+			for(Airport a : controller.getAirports())
+			{
+				if(rootNode.getChild(a.getShortName())!=null)
+				{
+					rootNode.getChild(a.getShortName()).removeFromParent();
+				}
+				
+			}
+			
+		}
+		
 	}
 
 	
@@ -106,12 +131,12 @@ public class EarthTest extends SimpleApplication
 		mat.setColor("Color",ColorRGBA.Green);
 		LinesNode.setMaterial(mat);
 		LinesNode.attachChild(lineGeo);
-		paintAirport(controller.getAirports());
 		rootNode.attachChild(LinesNode);
+	}
 		
 		
 		//dessineHelice(new Vector3f(0.f,0.f,0.f));
-	}
+	
 
 	public void dessineHelice(Vector3f vect)
 	{
@@ -157,6 +182,10 @@ public class EarthTest extends SimpleApplication
 	*/
 	
 	
+
+
+	
+
 	private static Vector3f geoCoordTo3dCoord(float lat, float lon)
 	{
 		float lat_cor = lat+TEXTURE_LAT_OFFSET;
@@ -169,16 +198,17 @@ public class EarthTest extends SimpleApplication
 	}
 	
 	
-	public void displayAirport(float latitude,float longitude)
+	public void displayAirport(float latitude,float longitude,String shortName)
 	{
-		
+		Node airportNode = new Node(shortName);
 		Vector3f v = geoCoordTo3dCoord(latitude, longitude);
 		Sphere sphere = new Sphere(16,8,0.008f);
 		Geometry aeroportGeom = new Geometry("Aeroport",sphere);
 		Material mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
 		mat.setColor("Color", ColorRGBA.Red);
 		aeroportGeom.setMaterial(mat);
-		rootNode.attachChild(aeroportGeom);
+		airportNode.attachChild(aeroportGeom);
+		rootNode.attachChild(airportNode);
 		aeroportGeom.setLocalTranslation(v);
 	}
 	
@@ -212,50 +242,62 @@ public class EarthTest extends SimpleApplication
 			}
 			else
 			{
-				
-				
-				
 				Vector3f v = geoCoordTo3dCoord(f.getPlane().getGeolocation().getLatitude(), f.getPlane().getGeolocation().getLongitude());
 				n.setLocalTranslation(v.mult(1+ (f.getPlane().getGeolocation().getHeight())/100000));
 				n.lookAt(new Vector3f(0,0,0), new Vector3f(0,1,0));
 				n.rotate((float)Math.PI/2,0,0);
 				n.rotate(0,(float)(f.getPlane().getDirection()*(Math.PI/180)),0);
-				
-				
-				
 			}
 		}
-	
-		
-		
-		
 	}
+
+
+
+	public void suprOtherNodeFlight(String id)
+	{
+		for(Flight f : controller.getFlights())
+		{
+			if(f.getId()!=id && rootNode.getChild(f.getId())!=null)
+			{
+				rootNode.getChild(f.getId()).removeFromParent();
+			}
+		}
+	}
+
 	
 	
 	public void paintPlanes(ArrayList<Flight> flights)
 	{
 		Node n;
-		for(Flight f : flights)
+		if(controller.getVolSelection()==null)
 		{
-			if (!f.getPlane().isisArrived())
+			for(Flight f : flights)
 			{
-				displayPlane(f);
-				f.getPlane().setisArrived(f.landed());
-			}
-			else if ((n = (Node) rootNode.getChild(f.getId()))  !=  null)
-			{
-				System.out.println("Je LE REMOVE DU NODe aAAAAARGH");
-				n.removeFromParent();
+				if (!f.getPlane().isisArrived())
+				{
+					displayPlane(f);
+					f.getPlane().setisArrived(f.landed());
+				}
+				else if ((n = (Node) rootNode.getChild(f.getId()))  !=  null)
+				{
+					System.out.println("Je LE REMOVE DU NODe aAAAAARGH");
+					n.removeFromParent();
+				}
 			}
 		}
+		else
+		{
+			suprOtherNodeFlight(controller.getVolSelection().getId());
+			displayPlane(controller.getVolSelection());
+		}
+		
 	}
-	
 	public void paintAirport(ArrayList<Airport> aeroport)
 	{
 		
 		for(Airport a : aeroport)
 		{
-			displayAirport(a.getGeolocation().getLatitude(),a.getGeolocation().getLongitude());
+			displayAirport(a.getGeolocation().getLatitude(),a.getGeolocation().getLongitude(),a.getShortName());
 		}
 	}
 

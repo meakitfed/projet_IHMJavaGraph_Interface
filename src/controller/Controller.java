@@ -25,6 +25,11 @@ public class Controller
 	private boolean fin = false;
 	private int indiceLigne = 0;
 	private boolean pause=true;
+	private int speedTime;
+	private Flight volSelection;
+	private boolean printPlane;
+	private boolean printAirport;
+	private boolean alreadyPrintAirport;
 	Date d;
 	
 	
@@ -41,6 +46,10 @@ public class Controller
 		getT0("src/Data/realtime_flights.dat");
 		updateRealTimeFlightsData("src/Data/realtime_flights.dat", t0);
 		d = new Date(getRealCurrentTime());
+		speedTime=5;
+		printPlane=true;
+		printAirport=true;
+		alreadyPrintAirport=false;
 	}
 	
 	
@@ -453,6 +462,25 @@ public class Controller
 	public ArrayList<Flight> getFlights() {
 		return flights;
 	}
+	
+
+
+
+	/**
+	 * @return the alreadyPrintAirport
+	 */
+	public boolean isAlreadyPrintAirport() {
+		return alreadyPrintAirport;
+	}
+
+
+
+	/**
+	 * @param alreadyPrintAirport the alreadyPrintAirport to set
+	 */
+	public void setAlreadyPrintAirport(boolean alreadyPrintAirport) {
+		this.alreadyPrintAirport = alreadyPrintAirport;
+	}
 
 
 
@@ -481,6 +509,25 @@ public class Controller
 	{
 		return pause;
 	}
+	
+
+
+
+	/**
+	 * @return the speedTime
+	 */
+	public int getSpeedTime() {
+		return speedTime;
+	}
+
+
+
+	/**
+	 * @param speedTime the speedTime to set
+	 */
+	public void setSpeedTime(int speedTime) {
+		this.speedTime = speedTime;
+	}
 
 
 
@@ -491,6 +538,46 @@ public class Controller
 	{
 		this.pause = pause;
 	}
+	
+	
+
+
+
+	/**
+	 * @return the printAirport
+	 */
+	public boolean isPrintAirport() {
+		return printAirport;
+	}
+
+
+
+	/**
+	 * @param printAirport the printAirport to set
+	 */
+	public void setPrintAirport(boolean printAirport) {
+		this.printAirport = printAirport;
+	}
+
+
+
+	/**
+	 * @param printPlane the printPlane to set
+	 */
+	public void setPrintPlane(boolean printPlane) {
+		this.printPlane = printPlane;
+	}
+	
+
+
+
+	/**
+	 * @return the printPlane
+	 */
+	public boolean isPrintPlane() {
+		return printPlane;
+	}
+
 
 
 
@@ -514,6 +601,38 @@ public class Controller
 	{
 		return currentTime+t0;
 	}
+
+
+
+	/**
+	 * @return the volSelection
+	 */
+	public Flight getVolSelection() 
+	{
+		return volSelection;
+	}
+
+
+
+	/**
+	 * @param volSelection the volSelection to set
+	 */
+	public void setVolSelection(Flight volSelection) 
+	{
+		this.volSelection = volSelection;
+	}
+	public Flight findFlightId(String id)
+	{
+		for(Flight f : flights)
+		{
+			if(f.getId().equals(id))
+			{
+				return f;
+			}
+		}
+		return null;
+	}
+	
 	
 	
 	

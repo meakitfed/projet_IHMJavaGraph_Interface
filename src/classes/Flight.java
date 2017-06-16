@@ -117,6 +117,14 @@ public class Flight
 		if (this.getArrival().getGeolocation().isCloseTo(this.getPlane().getGeolocation())) return true;
 		else return false;
 	}
+
+	/**
+	 * @return the modelAvion
+	 */
+	public String getModelAvion() {
+		return modelAvion;
+	}
+	
 	
 	
 	
