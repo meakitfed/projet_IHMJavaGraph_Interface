@@ -3,7 +3,11 @@ package controller;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+
+import java.io.LineNumberReader;
+
 import java.sql.Date;
+
 import java.util.ArrayList;
 
 import classes.Airport;
@@ -19,6 +23,7 @@ public class Controller
 	private long currentTime = 0;
 	private String realTimeFile = "src/Data/realtime_flights.dat";
 	private boolean fin = false;
+	private int indiceLigne = 0;
 	private boolean pause=true;
 	private int speedTime;
 	Date d;
@@ -99,11 +104,12 @@ public class Controller
 		try 
 		{
 			FileReader file=new FileReader(path);
-			BufferedReader bufRead = new BufferedReader(file);
+			LineNumberReader bufRead = new LineNumberReader(file);
 			long lastTime = t0;
 
 			String line= bufRead.readLine();
 			
+			while(bufRead.getLineNumber()<indiceLigne) bufRead.readLine();
 			
 			while(line != null)
 			{
@@ -116,6 +122,7 @@ public class Controller
 				}
 				else if((Long.parseLong(array[0]) - t0)  > currentTime)
 				{
+
 					bufRead.close();
 					return lastTime;
 				}
@@ -153,17 +160,20 @@ public class Controller
 		try 			
 		{
 			FileReader file=new FileReader(path);
-			BufferedReader bufRead = new BufferedReader(file);
+			LineNumberReader bufRead = new LineNumberReader(file);
 				
-			String line= bufRead.readLine();	
+			String line= bufRead.readLine();
 			
+			while(bufRead.getLineNumber()<indiceLigne) bufRead.readLine();
+				
 			while(line != null)
 			{
 				String[] array = line.split("///");
 				try
 				{
-					if(time == (Long.parseLong(array[0])))
+					if(time == (Long.parseLong(array[0]))) 
 					{
+						indiceLigne = bufRead.getLineNumber();
 						float lat = Float.parseFloat(array[2]);
 						float lon= Float.parseFloat(array[3]);
 						float height = Float.parseFloat(array[4]);
@@ -189,6 +199,10 @@ public class Controller
 								f.getPlane().setGrounded(grounded);
 							}
 						}
+					}
+					else if(time < (Long.parseLong(array[0])))
+					{
+						return;
 					}
 				}
 				catch(NumberFormatException e)

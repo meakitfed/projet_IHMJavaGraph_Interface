@@ -112,6 +112,12 @@ public class Flight
 	}
 	
 	
+	public boolean landed()
+	{
+		if (this.getArrival().getGeolocation().isCloseTo(this.getPlane().getGeolocation())) return true;
+		else return false;
+	}
+	
 	
 	
 	

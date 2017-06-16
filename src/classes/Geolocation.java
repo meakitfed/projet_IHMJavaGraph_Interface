@@ -12,6 +12,7 @@ public class Geolocation
 	private float latitude;
 	private float longitude;
 	private float height;
+	private static final float DIST_LANDING = 0.1f;
 
 	
 	public Geolocation(float longitude,float latitude, float height) 
@@ -67,6 +68,16 @@ public class Geolocation
 		return "Geolocation [latitude=" + latitude + ", longitude=" + longitude + ", height=" + height + "]";
 	}
 	
+	public float distanceTo(Geolocation other)
+	{
+		return (float) Math.sqrt((this.latitude-other.latitude)*(this.latitude-other.latitude) + (this.longitude-other.longitude)*(this.longitude-other.longitude)); 
+	}
+	
+	public boolean isCloseTo(Geolocation other)
+	{
+		if (this.distanceTo(other) < DIST_LANDING) return true;
+		else return false;
+	}
 	
 	
 
