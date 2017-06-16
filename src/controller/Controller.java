@@ -27,6 +27,9 @@ public class Controller
 	private boolean pause=true;
 	private int speedTime;
 	private Flight volSelection;
+	private boolean printPlane;
+	private boolean printAirport;
+	private boolean alreadyPrintAirport;
 	Date d;
 	
 	
@@ -44,6 +47,9 @@ public class Controller
 		updateRealTimeFlightsData("src/Data/realtime_flights.dat", t0);
 		d = new Date(getRealCurrentTime());
 		speedTime=5;
+		printPlane=true;
+		printAirport=true;
+		alreadyPrintAirport=false;
 	}
 	
 	
@@ -404,6 +410,25 @@ public class Controller
 	public ArrayList<Flight> getFlights() {
 		return flights;
 	}
+	
+
+
+
+	/**
+	 * @return the alreadyPrintAirport
+	 */
+	public boolean isAlreadyPrintAirport() {
+		return alreadyPrintAirport;
+	}
+
+
+
+	/**
+	 * @param alreadyPrintAirport the alreadyPrintAirport to set
+	 */
+	public void setAlreadyPrintAirport(boolean alreadyPrintAirport) {
+		this.alreadyPrintAirport = alreadyPrintAirport;
+	}
 
 
 
@@ -461,6 +486,46 @@ public class Controller
 	{
 		this.pause = pause;
 	}
+	
+	
+
+
+
+	/**
+	 * @return the printAirport
+	 */
+	public boolean isPrintAirport() {
+		return printAirport;
+	}
+
+
+
+	/**
+	 * @param printAirport the printAirport to set
+	 */
+	public void setPrintAirport(boolean printAirport) {
+		this.printAirport = printAirport;
+	}
+
+
+
+	/**
+	 * @param printPlane the printPlane to set
+	 */
+	public void setPrintPlane(boolean printPlane) {
+		this.printPlane = printPlane;
+	}
+	
+
+
+
+	/**
+	 * @return the printPlane
+	 */
+	public boolean isPrintPlane() {
+		return printPlane;
+	}
+
 
 
 

@@ -44,21 +44,43 @@ public class EarthTest extends SimpleApplication
 	@Override
 	public void simpleUpdate(float tpf)
 	{
-		if(!controller.isPause())
+		if(controller.isPrintPlane())
 		{
-
-			controller.incrementCurrentTime(10000*controller.getSpeedTime());
-
-
-			controller.setD(new Date(controller.getRealCurrentTime()));
-			WindowedTest.getTime().setText("    temps : "+WindowedTest.getShortDateFormat().format(controller.getD()));
-			controller.updateRealTimeFlightsData(controller.getRealTimeFile(), controller.getLastUpdateTime(controller.getRealTimeFile()));
-			paintPlanes(controller.getFlights());
+			if(!controller.isPause())
+			{
+				controller.incrementCurrentTime(10000*controller.getSpeedTime());
+				controller.setD(new Date(controller.getRealCurrentTime()));
+				WindowedTest.getTime().setText("    temps : "+WindowedTest.getShortDateFormat().format(controller.getD()));
+				controller.updateRealTimeFlightsData(controller.getRealTimeFile(), controller.getLastUpdateTime(controller.getRealTimeFile()));
+				paintPlanes(controller.getFlights());
+			}
+			else
+			{
+				paintPlanes(controller.getFlights());	
+			}
 		}
 		else
 		{
-			paintPlanes(controller.getFlights());	
+			suprOtherNodeFlight(null);
 		}
+		if(controller.isPrintAirport() && !controller.isAlreadyPrintAirport())
+		{
+			paintAirport(controller.getAirports());
+			controller.setAlreadyPrintAirport(true);
+		}
+		else
+		{
+			for(Airport a : controller.getAirports())
+			{
+				if(rootNode.getChild(a.getShortName())!=null)
+				{
+					rootNode.getChild(a.getShortName()).removeFromParent();
+				}
+				
+			}
+			
+		}
+		
 	}
 
 	
@@ -109,7 +131,6 @@ public class EarthTest extends SimpleApplication
 		mat.setColor("Color",ColorRGBA.Green);
 		LinesNode.setMaterial(mat);
 		LinesNode.attachChild(lineGeo);
-		paintAirport(controller.getAirports());
 		rootNode.attachChild(LinesNode);
 
 	}
@@ -126,16 +147,17 @@ public class EarthTest extends SimpleApplication
 	}
 	
 	
-	public void displayAirport(float latitude,float longitude)
+	public void displayAirport(float latitude,float longitude,String shortName)
 	{
-		
+		Node airportNode = new Node(shortName);
 		Vector3f v = geoCoordTo3dCoord(latitude, longitude);
 		Sphere sphere = new Sphere(16,8,0.008f);
 		Geometry aeroportGeom = new Geometry("Aeroport",sphere);
 		Material mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
 		mat.setColor("Color", ColorRGBA.Red);
 		aeroportGeom.setMaterial(mat);
-		rootNode.attachChild(aeroportGeom);
+		airportNode.attachChild(aeroportGeom);
+		rootNode.attachChild(airportNode);
 		aeroportGeom.setLocalTranslation(v);
 	}
 	
@@ -169,17 +191,11 @@ public class EarthTest extends SimpleApplication
 			}
 			else
 			{
-				
-				
-				
 				Vector3f v = geoCoordTo3dCoord(f.getPlane().getGeolocation().getLatitude(), f.getPlane().getGeolocation().getLongitude());
 				n.setLocalTranslation(v.mult(1+ (f.getPlane().getGeolocation().getHeight())/100000));
 				n.lookAt(new Vector3f(0,0,0), new Vector3f(0,1,0));
 				n.rotate((float)Math.PI/2,0,0);
 				n.rotate(0,(float)(f.getPlane().getDirection()*(Math.PI/180)),0);
-				
-				
-				
 			}
 		}
 	}
@@ -230,7 +246,7 @@ public class EarthTest extends SimpleApplication
 		
 		for(Airport a : aeroport)
 		{
-			displayAirport(a.getGeolocation().getLatitude(),a.getGeolocation().getLongitude());
+			displayAirport(a.getGeolocation().getLatitude(),a.getGeolocation().getLongitude(),a.getShortName());
 		}
 	}
 

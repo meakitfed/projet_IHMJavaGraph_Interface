@@ -10,6 +10,7 @@ import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -41,7 +42,7 @@ public class WindowedTest
 	private static JList selection;
 	private static JPanel informationVolSelection;
 	
-
+	
 	private static void createNewJFrame() 
 	{
 
@@ -54,22 +55,24 @@ public class WindowedTest
 				canvasApplication.stop();
 			}
 		});
-		/*panel.addActionListener(new ActionListener()
-				{
-					public void actionPerformed(ActionEvent e)
-					{
-						System.out.println("CREATE HEATMAP");
-						
-						canvasApplication.enqueue(new Callable<Object>(
-								public Object call() throws Exception 
-								{
-									canvasApplication.addHeatMap();
-									return null;
-								}
-								))
-				}})*/
+		
 		
 		panel = new JPanel(new BorderLayout());
+		/*panel.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				System.out.println("CREATE HEATMAP");
+				
+				canvasApplication.enqueue(new Callable<Object>(
+						public Object call() throws Exception 
+						{
+							canvasApplication.addHeatMap();
+							return null;
+						}}
+			);
+			}
+		});*/
 
 		// Create the menus
 		JPanel conteneur = new JPanel();
@@ -136,13 +139,13 @@ public class WindowedTest
 			dlm.addElement(f.getId());
 		}
 		
-		JLabel id = new JLabel("Identifiant : ");
-		JLabel depart = new JLabel("Depart : ");
-		JLabel arrive = new JLabel("Arrivée : ");
-		JLabel vitesse = new JLabel("Vitesse : ");
-		JLabel altitude = new JLabel("Altitude : ");
-		JLabel typeAvion = new JLabel("Type avion : ");
-		JButton vueAvionButton = new JButton("Vue Avion");
+		JLabel id = new JLabel(" Identifiant : ");
+		JLabel depart = new JLabel(" Depart : ");
+		JLabel arrive = new JLabel(" Arrivée : ");
+		JLabel vitesse = new JLabel(" Vitesse : ");
+		JLabel altitude = new JLabel(" Altitude : ");
+		JLabel typeAvion = new JLabel(" Type avion : ");
+		JButton vueAvionButton = new JButton(" Vue Avion");
 		
 		selection.addListSelectionListener(new ListSelectionListener() 
 		{
@@ -155,21 +158,21 @@ public class WindowedTest
                     Flight f= c.getVolSelection();
                     if(f!=null)
                     {
-                    	id.setText("Identifiant : "+f.getId());
-                		depart.setText("Depart : "+f.getDeparture().getCityName());
-                		arrive.setText("Arrivée : "+f.getArrival().getCityName());
-                		vitesse.setText("Vitesse : "+(f.getPlane().getSpeedX()+f.getPlane().getSpeedY())+" km/h");
-                		altitude.setText("Altitude : "+f.getPlane().getGeolocation().getHeight()+" m ");
-                		typeAvion.setText("Type avion : "+f.getModelAvion());
+                    	id.setText(" Identifiant : "+f.getId());
+                		depart.setText(" Depart : "+f.getDeparture().getCityName());
+                		arrive.setText(" Arrivée : "+f.getArrival().getCityName());
+                		vitesse.setText(" Vitesse : "+(f.getPlane().getSpeedX()+f.getPlane().getSpeedY())+" km/h");
+                		altitude.setText(" Altitude : "+f.getPlane().getGeolocation().getHeight()+" m ");
+                		typeAvion.setText(" Type avion : "+f.getModelAvion());
                     }
                     else
                     {
-                    	id.setText("Identifiant : ");
-                		depart.setText("Depart : ");
-                		arrive.setText("Arrivée : ");
-                		vitesse.setText("Vitesse : ");
-                		altitude.setText("Altitude : ");
-                		typeAvion.setText("Type avion : ");
+                    	id.setText(" Identifiant : ");
+                		depart.setText(" Depart : ");
+                		arrive.setText(" Arrivée : ");
+                		vitesse.setText(" Vitesse : ");
+                		altitude.setText(" Altitude : ");
+                		typeAvion.setText(" Type avion : ");
                     }
                 }
             }
@@ -185,7 +188,7 @@ public class WindowedTest
 		informationVolSelection = new JPanel();
 		informationVolSelection.setPreferredSize(new Dimension(200,200));
 		informationVolSelection.setBorder(BorderFactory.createTitledBorder("Infos vol sélectionné"));
-		informationVolSelection.setLayout(new BoxLayout(informationVolSelection,BoxLayout.Y_AXIS));
+		informationVolSelection.setLayout(new GridLayout(7,1,5,0));
 		
 		
 		informationVolSelection.add(id);
@@ -207,12 +210,47 @@ public class WindowedTest
 		JCheckBox affichageAvions = new JCheckBox("avions",true);
 		JCheckBox affichageTrajectoire = new JCheckBox("trajectoire",true);
 		
+		affichageAvions.addActionListener(new ActionListener() 
+		{
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				if(c.isPrintPlane()==true)
+				{
+					c.setPrintPlane(false);
+					c.setAlreadyPrintAirport(false);
+				}
+				else
+				{
+					c.setPrintPlane(true);
+				}
+				
+			}
+		});
+		affichageAeroport.addActionListener(new ActionListener() 
+		{
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				if(c.isPrintPlane()==true)
+				{
+					c.setPrintAirport(false);
+				}
+				else
+				{
+					c.setPrintAirport(true);
+				}
+				
+			}
+		});
+		
 		JPanel filtresVol = new JPanel();
 		filtresVol.setPreferredSize(new Dimension(180,100));
 		filtresVol.setBorder(BorderFactory.createTitledBorder("Filtres vols"));
 		filtresVol.setLayout(new BoxLayout(filtresVol,BoxLayout.Y_AXIS));
 		
 		JRadioButton radioButton1 = new JRadioButton("option 1 affichage");
+		
 		filtresVol.add(radioButton1);
 		
 		affichage.add(affichageAeroport);
