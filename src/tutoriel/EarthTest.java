@@ -11,7 +11,6 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
-import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -21,8 +20,6 @@ import com.jme3.scene.shape.Sphere;
 
 import classes.Airport;
 import classes.Flight;
-import classes.Geolocation;
-import classes.Plane;
 import controller.Controller;
 
 public class EarthTest extends SimpleApplication 
@@ -49,19 +46,19 @@ public class EarthTest extends SimpleApplication
 		if(!controller.isPause())
 		{
 			System.out.println();
-			controller.incrementCurrentTime(50000);
+			controller.incrementCurrentTime(500000);
 			controller.setD(new Date(controller.getRealCurrentTime()));
 			WindowedTest.getTime().setText("    temps : "+WindowedTest.getShortDateFormat().format(controller.getD()));
 			controller.updateRealTimeFlightsData(controller.getRealTimeFile(), controller.getLastUpdateTime(controller.getRealTimeFile()));
-			paintPlane(controller.getFlights());	
+			paintPlanes(controller.getFlights());
 		}
 		else
 		{
-		
-			paintPlane(controller.getFlights());	
+			paintPlanes(controller.getFlights());	
 		}
 	}
 
+	
 	@Override
 	public void simpleInitApp() 
 	{
@@ -155,6 +152,8 @@ public class EarthTest extends SimpleApplication
 							-FastMath.cos(lon_cor*FastMath.DEG_TO_RAD)
 							*FastMath.cos(lat_cor*FastMath.DEG_TO_RAD)).mult(5);
 	}
+	
+	
 	public void displayAirport(float latitude,float longitude)
 	{
 		
@@ -168,43 +167,48 @@ public class EarthTest extends SimpleApplication
 		aeroportGeom.setLocalTranslation(v);
 	}
 	
+	
+	
 	public void displayPlane(Flight f)
 	{
 		Node n= (Node) rootNode.getChild(f.getId());
 		
-		if(n==null)
+		if(!f.getPlane().isisArrived())
 		{
-			Node planeNode = new Node(f.getId());
-			Spatial plane_geom =assetManager.loadModel("earth/plane.obj");
-			Vector3f v = geoCoordTo3dCoord(f.getPlane().getGeolocation().getLatitude(), f.getPlane().getGeolocation().getLongitude());
-			Material mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-			mat.setColor("Color", ColorRGBA.Green);
-			plane_geom.setMaterial(mat);
-			planeNode.attachChild(plane_geom);
-			rootNode.attachChild(planeNode);
-			planeNode.setLocalTranslation(v.mult(1+ (f.getPlane().getGeolocation().getHeight())/100000));
-			planeNode.scale(0.1f);
-			planeNode.lookAt(new Vector3f(0,0,0), new Vector3f(0,1,0));
-			planeNode.rotate((float)Math.PI/2,0,0);
-			planeNode.rotate(0,(float)(f.getPlane().getDirection()*(Math.PI/180)),0);
 			
-		}
-		else
-		{
-			if(f.getPlane().isGrounded())
+			if(n==null)
 			{
-				n.removeFromParent();
+				//cree un node pour l'avion
+				Node planeNode = new Node(f.getId());
+				Spatial plane_geom =assetManager.loadModel("earth/plane.obj");
+				Vector3f v = geoCoordTo3dCoord(f.getPlane().getGeolocation().getLatitude(), f.getPlane().getGeolocation().getLongitude());
+				Material mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+				mat.setColor("Color", ColorRGBA.Green);
+				plane_geom.setMaterial(mat);
+				planeNode.attachChild(plane_geom);
+				rootNode.attachChild(planeNode);
+				//deplace l'avion
+				planeNode.setLocalTranslation(v.mult(1+ (f.getPlane().getGeolocation().getHeight())/100000));
+				planeNode.scale(0.1f);
+				planeNode.lookAt(new Vector3f(0,0,0), new Vector3f(0,1,0));
+				planeNode.rotate((float)Math.PI/2,0,0);
+				planeNode.rotate(0,(float)(f.getPlane().getDirection()*(Math.PI/180)),0);
+				
 			}
 			else
 			{
+				
+				
+				
 				Vector3f v = geoCoordTo3dCoord(f.getPlane().getGeolocation().getLatitude(), f.getPlane().getGeolocation().getLongitude());
 				n.setLocalTranslation(v.mult(1+ (f.getPlane().getGeolocation().getHeight())/100000));
 				n.lookAt(new Vector3f(0,0,0), new Vector3f(0,1,0));
 				n.rotate((float)Math.PI/2,0,0);
 				n.rotate(0,(float)(f.getPlane().getDirection()*(Math.PI/180)),0);
+				
+				
+				
 			}
-			
-			
 		}
 	
 		
@@ -213,11 +217,21 @@ public class EarthTest extends SimpleApplication
 	}
 	
 	
-	public void paintPlane(ArrayList<Flight> flights)
+	public void paintPlanes(ArrayList<Flight> flights)
 	{
+		Node n;
 		for(Flight f : flights)
 		{
-			displayPlane(f);
+			if (!f.getPlane().isisArrived())
+			{
+				displayPlane(f);
+				f.getPlane().setisArrived(f.landed());
+			}
+			else if ((n = (Node) rootNode.getChild(f.getId()))  !=  null)
+			{
+				System.out.println("Je LE REMOVE DU NODe aAAAAARGH");
+				n.removeFromParent();
+			}
 		}
 	}
 	
