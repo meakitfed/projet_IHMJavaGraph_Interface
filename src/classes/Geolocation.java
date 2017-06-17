@@ -3,6 +3,8 @@
  */
 package classes;
 
+import java.util.ArrayList;
+
 /**
  * @author nathan.bonnard
  *
@@ -13,6 +15,7 @@ public class Geolocation
 	private float longitude;
 	private float height;
 	private static final float DIST_LANDING = 1.f;
+	ArrayList<Geolocation> path = new ArrayList<Geolocation>();
 
 	
 	public Geolocation(float longitude,float latitude, float height) 

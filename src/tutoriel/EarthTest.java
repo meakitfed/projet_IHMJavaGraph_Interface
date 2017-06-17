@@ -21,6 +21,7 @@ import com.jme3.scene.shape.Sphere;
 
 import classes.Airport;
 import classes.Flight;
+import classes.Geolocation;
 import controller.Controller;
 
 public class EarthTest extends SimpleApplication 
@@ -132,6 +133,15 @@ public class EarthTest extends SimpleApplication
 		LinesNode.setMaterial(mat);
 		LinesNode.attachChild(lineGeo);
 		rootNode.attachChild(LinesNode);
+		
+		
+		//AFFICHAGE CHEMIN TEST******************************************
+		ArrayList<Geolocation> path = controller.getPathOf(controller.getFlights().get(7));
+		System.out.println("path " +path);
+		drawPath(path);
+		//TESSSSSSTTTTTTTTTT
+		
+		
 	}
 		
 		
@@ -168,18 +178,37 @@ public class EarthTest extends SimpleApplication
 	}
 	
 	
-	//A TERMINER EN SINSPIRER DE HELICE
-	/*
-	public void drawPath(ArrayList<Geolocation> path )
+	
+	public void drawPath(ArrayList<Geolocation> path)
 	{
 		Vector3f oldVect = geoCoordTo3dCoord(path.get(0).getLatitude(), path.get(0).getLongitude());
+		oldVect.mult(1+ path.get(0).getHeight()/100000);
 		
 		for(int i = 1 ; i< path.size()-1; i++)
 		{
+			Vector3f newVect = geoCoordTo3dCoord(path.get(i).getLatitude(), path.get(i).getLongitude());
+			newVect.mult(1+ path.get(i).getHeight()/100000);
 			
+			Node pathNode = new Node("path");
+			
+			Line line = new Line(oldVect, newVect);
+			Geometry lineGeo = new Geometry("lineGeo",line);
+			Material mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+			Material mat2 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+			
+			lineGeo.setMaterial(mat2);						
+			mat.getAdditionalRenderState().setLineWidth(4.0f);
+			mat.setColor("Color",ColorRGBA.randomColor());
+			pathNode.setMaterial(mat);
+			pathNode.attachChild(lineGeo);
+			
+			rootNode.attachChild(pathNode);
+			
+			
+			oldVect = newVect;
 		}
 	}
-	*/
+	
 	
 	
 

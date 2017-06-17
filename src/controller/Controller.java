@@ -267,10 +267,12 @@ public class Controller
 				{
 					if(f.getId().equals(array[1].trim())) 
 					{
+						System.out.println("yo");
 						float lat = Float.parseFloat(array[2]);
 						float lon= Float.parseFloat(array[3]);
 						float height = Float.parseFloat(array[4]);
 						toReturn.add(new Geolocation(lon, lat, height));
+						System.out.println("sdfsdf "+toReturn);
 					}
 		
 				}
@@ -291,7 +293,7 @@ public class Controller
 		{
 			e.printStackTrace();
 		}
-		
+		System.out.println(toReturn);
 		return toReturn;
 	}
 	
