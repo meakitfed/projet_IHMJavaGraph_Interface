@@ -158,6 +158,7 @@ public class WindowedTest
                     Flight f= c.getVolSelection();
                     if(f!=null)
                     {
+                    	c.setVolSelectionAsChanged(true);
                     	id.setText(" Identifiant : "+f.getId());
                 		depart.setText(" Depart : "+f.getDeparture().getCityName());
                 		arrive.setText(" Arrivée : "+f.getArrival().getCityName());
@@ -167,6 +168,7 @@ public class WindowedTest
                     }
                     else
                     {
+                    	c.setVolSelectionAsChanged(false);
                     	id.setText(" Identifiant : ");
                 		depart.setText(" Depart : ");
                 		arrive.setText(" Arrivée : ");
@@ -208,17 +210,17 @@ public class WindowedTest
 		
 		JCheckBox affichageAeroport = new JCheckBox("aéroport",true);
 		JCheckBox affichageAvions = new JCheckBox("avions",true);
-		JCheckBox affichageTrajectoire = new JCheckBox("trajectoire",true);
+		JCheckBox affichageTrajectoire = new JCheckBox("trajectoire",false);
 		
 		affichageAvions.addActionListener(new ActionListener() 
 		{
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				if(c.isPrintPlane()==true)
+				AbstractButton event = (AbstractButton) e.getSource();
+				if(!event.getModel().isSelected())
 				{
 					c.setPrintPlane(false);
-					c.setAlreadyPrintAirport(false);
 				}
 				else
 				{
@@ -232,13 +234,33 @@ public class WindowedTest
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				if(c.isPrintPlane()==true)
+				AbstractButton event = (AbstractButton) e.getSource();
+				if(!event.getModel().isSelected())
 				{
 					c.setPrintAirport(false);
+					c.setAlreadyPrintAirport(false);
 				}
 				else
 				{
 					c.setPrintAirport(true);
+					c.setAlreadyPrintAirport(false);
+				}
+				
+			}
+		});
+		affichageTrajectoire.addActionListener(new ActionListener() 
+		{
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				AbstractButton event = (AbstractButton) e.getSource();
+				if(!event.getModel().isSelected())
+				{
+					c.setPrintPathPlane(false);
+				}
+				else
+				{
+					c.setPrintPathPlane(true);
 				}
 				
 			}

@@ -30,6 +30,8 @@ public class Controller
 	private boolean printPlane;
 	private boolean printAirport;
 	private boolean alreadyPrintAirport;
+	private boolean printPathPlane;
+	private boolean volSelectionAsChanged;
 	Date d;
 	
 	
@@ -50,6 +52,8 @@ public class Controller
 		printPlane=true;
 		printAirport=true;
 		alreadyPrintAirport=false;
+		printPathPlane=false;
+		volSelectionAsChanged=false;
 	}
 	
 	
@@ -161,7 +165,7 @@ public class Controller
 	{
 		if (currentTime + t0  > new Long((long) 1496195547396f))
 		{
-			System.out.println("dernier temps atteint");
+			//System.out.println("dernier temps atteint");
 			fin =true;
 		}
 		try 			
@@ -214,7 +218,7 @@ public class Controller
 				}
 				catch(NumberFormatException e)
 				{
-					System.err.println("Données erronées");
+					//System.err.println("Données erronées");
 					
 				}
 					
@@ -267,12 +271,10 @@ public class Controller
 				{
 					if(f.getId().equals(array[1].trim())) 
 					{
-						System.out.println("yo");
 						float lat = Float.parseFloat(array[2]);
 						float lon= Float.parseFloat(array[3]);
 						float height = Float.parseFloat(array[4]);
 						toReturn.add(new Geolocation(lon, lat, height));
-						System.out.println("sdfsdf "+toReturn);
 					}
 		
 				}
@@ -570,6 +572,44 @@ public class Controller
 		this.printPlane = printPlane;
 	}
 	
+	
+
+
+
+	/**
+	 * @return the printPathPlane
+	 */
+	public boolean isPrintPathPlane() {
+		return printPathPlane;
+	}
+	
+
+
+
+	/**
+	 * @return the volSelectionAsChanged
+	 */
+	public boolean isVolSelectionAsChanged() {
+		return volSelectionAsChanged;
+	}
+
+
+
+	/**
+	 * @param volSelectionAsChanged the volSelectionAsChanged to set
+	 */
+	public void setVolSelectionAsChanged(boolean volSelectionAsChanged) {
+		this.volSelectionAsChanged = volSelectionAsChanged;
+	}
+
+
+
+	/**
+	 * @param printPathPlane the printPathPlane to set
+	 */
+	public void setPrintPathPlane(boolean printPathPlane) {
+		this.printPathPlane = printPathPlane;
+	}
 
 
 

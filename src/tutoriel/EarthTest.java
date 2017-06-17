@@ -64,12 +64,25 @@ public class EarthTest extends SimpleApplication
 		{
 			suprOtherNodeFlight(null);
 		}
+
+		if(controller.getVolSelection()!=null && controller.isPrintPathPlane() && controller.isVolSelectionAsChanged())
+		{
+			if(rootNode.getChild("path")!=null)
+			{
+				rootNode.getChild("path").removeFromParent();
+			}
+			controller.setVolSelectionAsChanged(false);
+			ArrayList<Geolocation> path = controller.getPathOf(controller.getVolSelection());
+			drawPath(path);
+		}
+		
+		
 		if(controller.isPrintAirport() && !controller.isAlreadyPrintAirport())
 		{
 			paintAirport(controller.getAirports());
 			controller.setAlreadyPrintAirport(true);
 		}
-		else
+		else if(!controller.isAlreadyPrintAirport())
 		{
 			for(Airport a : controller.getAirports())
 			{
@@ -77,11 +90,8 @@ public class EarthTest extends SimpleApplication
 				{
 					rootNode.getChild(a.getShortName()).removeFromParent();
 				}
-				
 			}
-			
 		}
-		
 	}
 
 	
@@ -135,78 +145,42 @@ public class EarthTest extends SimpleApplication
 		rootNode.attachChild(LinesNode);
 		
 		
-		//AFFICHAGE CHEMIN TEST******************************************
-		ArrayList<Geolocation> path = controller.getPathOf(controller.getFlights().get(7));
-		System.out.println("path " +path);
-		drawPath(path);
-		//TESSSSSSTTTTTTTTTT
-		
 		
 	}
 		
-		
-		//dessineHelice(new Vector3f(0.f,0.f,0.f));
 	
 
-	public void dessineHelice(Vector3f vect)
-	{
-		Vector3f oldVect = vect;
-		
-		for(int i=0; i<10000;i++)
-		{
-			float t = i/5.f;
-			
-			Vector3f newVect = new Vector3f(FastMath.cos(t), t/5.0f, FastMath.sin(t));
-			
-			Node LinesNode= new Node("LinesNode");
-			
-			Line line = new Line(oldVect,newVect);
-			Geometry lineGeo = new Geometry("lineGeo",line);
-			Material mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-			Material mat2 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-			lineGeo.setMaterial(mat2);						
-			mat.getAdditionalRenderState().setLineWidth(4.0f);
-			mat.setColor("Color",ColorRGBA.Green);
-			LinesNode.setMaterial(mat);
-			LinesNode.attachChild(lineGeo);
-			
-			rootNode.attachChild(LinesNode);
-			
-			
-			oldVect = newVect;
-		}
-	}
-	
-	
+
 	
 	public void drawPath(ArrayList<Geolocation> path)
 	{
-		Vector3f oldVect = geoCoordTo3dCoord(path.get(0).getLatitude(), path.get(0).getLongitude());
-		oldVect.mult(1+ path.get(0).getHeight()/100000);
+		Vector3f oldVect = geoCoordTo3dCoord(path.get(0).getLatitude(), path.get(0).getLongitude()).mult(1+ path.get(0).getHeight()/100000);
+		
+		
+		Node allPathNode = new Node("path");
 		
 		for(int i = 1 ; i< path.size()-1; i++)
 		{
-			Vector3f newVect = geoCoordTo3dCoord(path.get(i).getLatitude(), path.get(i).getLongitude());
-			newVect.mult(1+ path.get(i).getHeight()/100000);
+			Vector3f newVect = geoCoordTo3dCoord(path.get(i).getLatitude(), path.get(i).getLongitude()).mult(1+ path.get(i).getHeight()/100000);
 			
-			Node pathNode = new Node("path");
+			
+			Node pathNode = new Node();
 			
 			Line line = new Line(oldVect, newVect);
 			Geometry lineGeo = new Geometry("lineGeo",line);
 			Material mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
 			Material mat2 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-			
 			lineGeo.setMaterial(mat2);						
 			mat.getAdditionalRenderState().setLineWidth(4.0f);
 			mat.setColor("Color",ColorRGBA.randomColor());
 			pathNode.setMaterial(mat);
 			pathNode.attachChild(lineGeo);
+			System.out.println(path.get(i).getHeight()/100000);
 			
-			rootNode.attachChild(pathNode);
-			
-			
+			allPathNode.attachChild(pathNode);
 			oldVect = newVect;
 		}
+		rootNode.attachChild(allPathNode);
 	}
 	
 	
@@ -242,14 +216,12 @@ public class EarthTest extends SimpleApplication
 	}
 	
 	
-	
 	public void displayPlane(Flight f)
 	{
 		Node n= (Node) rootNode.getChild(f.getId());
 		
 		if(!f.getPlane().isisArrived())
 		{
-			
 			if(n==null)
 			{
 				//cree un node pour l'avion
@@ -263,7 +235,7 @@ public class EarthTest extends SimpleApplication
 				rootNode.attachChild(planeNode);
 				//deplace l'avion
 				planeNode.setLocalTranslation(v.mult(1+ (f.getPlane().getGeolocation().getHeight())/100000));
-				planeNode.scale(0.1f);
+				planeNode.scale(0.05f);
 				planeNode.lookAt(new Vector3f(0,0,0), new Vector3f(0,1,0));
 				planeNode.rotate((float)Math.PI/2,0,0);
 				planeNode.rotate(0,(float)(f.getPlane().getDirection()*(Math.PI/180)),0);
@@ -292,8 +264,6 @@ public class EarthTest extends SimpleApplication
 			}
 		}
 	}
-
-	
 	
 	public void paintPlanes(ArrayList<Flight> flights)
 	{
@@ -309,7 +279,6 @@ public class EarthTest extends SimpleApplication
 				}
 				else if ((n = (Node) rootNode.getChild(f.getId()))  !=  null)
 				{
-					System.out.println("Je LE REMOVE DU NODe aAAAAARGH");
 					n.removeFromParent();
 				}
 			}
