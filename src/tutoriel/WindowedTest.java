@@ -379,6 +379,7 @@ public class WindowedTest
 		JComboBox<String> listePays = new JComboBox<String>();
 		
 		ArrayList<String> list = new ArrayList<String>() ;
+
 		for(Airport a: c.getAirports())
 		{
 				list.add(a.getCountry());	

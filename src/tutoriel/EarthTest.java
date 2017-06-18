@@ -53,7 +53,6 @@ public class EarthTest extends SimpleApplication
 		
 		if(controller.isPrintAirport() && !controller.isAlreadyPrintAirport())
 		{
-			System.out.println("hey");
 			suprAllAirportNode();
 			paintAirport(controller.getAirports());
 			controller.setAlreadyPrintAirport(true);
@@ -242,7 +241,6 @@ public class EarthTest extends SimpleApplication
 		{
 			Vector3f newVect = geoCoordTo3dCoord(path.get(i).getLatitude(), path.get(i).getLongitude()).mult(1+ path.get(i).getHeight()/100000);
 			
-			
 			Node pathNode = new Node();
 			
 			Line line = new Line(oldVect, newVect);
@@ -254,19 +252,13 @@ public class EarthTest extends SimpleApplication
 			mat.setColor("Color",ColorRGBA.randomColor());
 			pathNode.setMaterial(mat);
 			pathNode.attachChild(lineGeo);
-			System.out.println(path.get(i).getHeight()/100000);
-			
 			allPathNode.attachChild(pathNode);
 			oldVect = newVect;
 		}
 		rootNode.attachChild(allPathNode);
 	}
 	
-	
-	
 
-
-	
 
 	private static Vector3f geoCoordTo3dCoord(float lat, float lon)
 	{
@@ -305,10 +297,9 @@ public class EarthTest extends SimpleApplication
 	
 	public void displayPlane(Flight f, AirportNode nodeArrival, AirportNode nodeDeparture)
 	{
-		
 		if(!f.getPlane().isisArrived())
 		{
-			if(nodeArrival.getChild(f.getId())==null || nodeDeparture.getChild(f.getId())==null)
+			if(nodeArrival.getChild(f.getId())==null && nodeDeparture.getChild(f.getId())==null)
 			{
 				//cree un node pour l'avion
 				FlightNode planeNode = new FlightNode(f.getId());
@@ -343,6 +334,7 @@ public class EarthTest extends SimpleApplication
 			else
 			{
 				Vector3f v = geoCoordTo3dCoord(f.getPlane().getGeolocation().getLatitude(), f.getPlane().getGeolocation().getLongitude());
+				
 				if(nodeArrival.getChild(f.getId())!=null)
 				{
 					Node n =nodeArrival.findFlightNodeNamed(f.getId());
@@ -351,7 +343,7 @@ public class EarthTest extends SimpleApplication
 					n.rotate((float)Math.PI/2,0,0);
 					n.rotate(0,(float)(f.getPlane().getDirection()*(Math.PI/180)),0);
 				}
-				else
+				if(nodeDeparture.getChild(f.getId())!=null)
 				{
 					Node n =nodeDeparture.findFlightNodeNamed(f.getId());
 					n.setLocalTranslation(v.mult(1+ (f.getPlane().getGeolocation().getHeight())/100000));
@@ -395,7 +387,6 @@ public class EarthTest extends SimpleApplication
 
 				nodeArrival = findCountryNodeNamed(f.getArrival().getCountry()).findAirportNodeNamed(f.getArrival().getShortName());
 				nodeDeparture = findCountryNodeNamed(f.getDeparture().getCountry()).findAirportNodeNamed(f.getDeparture().getShortName());
-				
 				if (!f.getPlane().isisArrived())
 				{
 					displayPlane(f,nodeArrival,nodeDeparture);
@@ -411,8 +402,6 @@ public class EarthTest extends SimpleApplication
 					{
 						nodeDeparture.getChild(f.getId()).removeFromParent();
 					}
-					
-					
 				}
 			}
 		}
