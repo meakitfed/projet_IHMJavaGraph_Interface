@@ -1,13 +1,8 @@
 package tutoriel;
 
-import com.jme3.system.AppSettings;
-import com.jme3.system.JmeCanvasContext;
-
-import classes.Flight;
-import controller.Controller;
-
 import java.awt.BorderLayout;
 import java.awt.Canvas;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -16,23 +11,48 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import javax.swing.*;
+import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import com.jme3.input.ChaseCamera;
+import com.jme3.math.Vector3f;
+import com.jme3.system.AppSettings;
+import com.jme3.system.JmeCanvasContext;
+
+import classes.Airport;
+import classes.Flight;
+import controller.Controller;
+
 public class WindowedTest 
 {
 	
-	// TODO : Add here a static variable which will make possible 
-	// to store a link to your JMonkeyEngine application 
-	// For example : private static MyApplication canvasApplication;
+
 	private static EarthTest canvasApplication;
 	
-	private static Canvas canvas; // JAVA Swing Canvas
+	private static Canvas canvas; 
 	
 	private static JFrame frame;
 	private static JPanel panel;
@@ -145,8 +165,49 @@ public class WindowedTest
 		JLabel vitesse = new JLabel(" Vitesse : ");
 		JLabel altitude = new JLabel(" Altitude : ");
 		JLabel typeAvion = new JLabel(" Type avion : ");
-		JButton vueAvionButton = new JButton(" Vue Avion");
+		JButton vueAvionButton = new JButton(" Vue Avion ");
 		
+		vueAvionButton.addActionListener(new ActionListener() 
+		{
+			@Override
+			public void actionPerformed(ActionEvent event) 
+			{
+				JButton button = (JButton) event.getSource();
+				if (button.getText().equals(" Vue Avion ")) 
+				{
+					c.setPlaneView(true);
+					
+					
+					ChaseCamera chaseCam = new ChaseCamera(canvasApplication.getCamera(),canvasApplication.getRootNode().getChild(c.getVolSelection().getId()),canvasApplication.getInputManager());
+					
+					chaseCam.setDragToRotate(false);
+					chaseCam.setInvertVerticalAxis(false);
+					chaseCam.setRotationSpeed(0.0f);
+					chaseCam.setMinVerticalRotation(0);
+					chaseCam.setMaxVerticalRotation(0);
+					chaseCam.setMinDistance(0.5f);
+					chaseCam.setMaxDistance(10f);
+					
+		
+
+					button.setText(" Vue Globale ");
+				} else 
+				{
+					
+					ChaseCamera chaseCam = new ChaseCamera(canvasApplication.getCamera(),canvasApplication.getRootNode().getChild("earth"),canvasApplication.getInputManager());
+					chaseCam.setDragToRotate(true);
+					chaseCam.setInvertVerticalAxis(true);
+					chaseCam.setRotationSpeed(10.0f);
+					chaseCam.setMinVerticalRotation((float)-(Math.PI/2-0.0001f));
+					chaseCam.setMaxVerticalRotation((float)Math.PI/2);
+					chaseCam.setMinDistance(7.5f);
+					chaseCam.setMaxDistance(30.0f);
+					
+					c.setPlaneView(false);
+					button.setText(" Vue Avion ");
+				}
+			}
+		});
 		selection.addListSelectionListener(new ListSelectionListener() 
 		{
             @Override
@@ -204,7 +265,7 @@ public class WindowedTest
 		
 		
 		JPanel affichage = new JPanel();
-		affichage.setPreferredSize(new Dimension(200,200));
+		affichage.setPreferredSize(new Dimension(200,240));
 		affichage.setBorder(BorderFactory.createTitledBorder("Affichage"));
 		affichage.setLayout(new FlowLayout());
 		
@@ -267,26 +328,85 @@ public class WindowedTest
 		});
 		
 		JPanel filtresVol = new JPanel();
-		filtresVol.setPreferredSize(new Dimension(180,100));
+		filtresVol.setPreferredSize(new Dimension(180,140));
 		filtresVol.setBorder(BorderFactory.createTitledBorder("Filtres vols"));
 		filtresVol.setLayout(new BoxLayout(filtresVol,BoxLayout.Y_AXIS));
 		
-		JRadioButton radioButton1 = new JRadioButton("option 1 affichage");
+
+		JComboBox listeAeroport = new JComboBox();
+		for(Airport a: c.getAirports())
+		{
+			if(!a.getShortName().equals("\\N"))
+			{
+				listeAeroport.addItem(a.getShortName());
+			}
+			
+		}
+		JRadioButton radioButton1 = new JRadioButton("aéroport");
+		radioButton1.addActionListener(new ActionListener() 
+		{
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				AbstractButton event = (AbstractButton) e.getSource();
+				if(!event.getModel().isSelected())
+				{
+					
+				}
+				else
+				{
+					
+				}
+				
+			}
+		});
+		JComboBox listePays = new JComboBox();
+		ArrayList list = new ArrayList() ;
+		for(Airport a: c.getAirports())
+		{
+				list.add(a.getCountry());	
+		}
+        Set set = new HashSet() ;
+        set.addAll(list) ;
+        ArrayList<String> distinctList = new ArrayList<String>(set) ;
+        for(String s : distinctList)
+		{
+				listePays.addItem(s);	
+		}
+		
+		JRadioButton radioButton2 = new JRadioButton("pays");
+		radioButton2.addActionListener(new ActionListener() 
+		{
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				AbstractButton event = (AbstractButton) e.getSource();
+				if(!event.getModel().isSelected())
+				{
+					
+				}
+				else
+				{
+					
+				}
+				
+			}
+		});
 		
 		filtresVol.add(radioButton1);
+		filtresVol.add(listeAeroport);
+		filtresVol.add(radioButton2);
+		filtresVol.add(listePays);
 		
 		affichage.add(affichageAeroport);
 		affichage.add(affichageAvions);
 		affichage.add(affichageTrajectoire);
 		affichage.add(filtresVol);
 		
-		
 		conteneur.add(tempsReel);
 		conteneur.add(volSelection);
 		conteneur.add(informationVolSelection);
 		conteneur.add(affichage);
-		
-		
 		
 		panel.add(conteneur, BorderLayout.WEST);
 		
@@ -335,35 +455,30 @@ public class WindowedTest
 	public static void main(String[] args)
 	{
 		c= new Controller();
-		// create new JME appsettings
+		
+		
 		AppSettings settings = new AppSettings(true);
 		settings.setResolution(1280, 800);
 		settings.setSamples(8);
 		settings.setFrameRate(60);
 		settings.setVSync(true);
 
-		// TODO : create here a new JMonkeyEngine application
 		canvasApplication = new EarthTest(c);
-		
-		// TODO : apply the settings and configure our application
-		// in the same way than in the "public static void main()" method from SimpleApplication
+
 		canvasApplication.setSettings(settings);
 		canvasApplication.setShowSettings(false);
 		canvasApplication.setDisplayStatView(false);
 		canvasApplication.setDisplayFps(false);
 		canvasApplication.setPauseOnLostFocus(false);
-		// TODO : Uncomment this line to start the application
-		// NB : this line is used instead of the app.start();
-		canvasApplication.createCanvas(); // create canvas!
+
+		canvasApplication.createCanvas(); 
 		
 		
-		// TODO : Uncomment the following lines to get the canvas from our application
 		JmeCanvasContext ctx = (JmeCanvasContext) canvasApplication.getContext();
 		canvas = ctx.getCanvas();
 		Dimension dim = new Dimension(settings.getWidth(), settings.getHeight());
 		canvas.setPreferredSize(dim);
 
-		// Create the JFrame with the Canvas on the middle
 		createNewJFrame();
 	}
 

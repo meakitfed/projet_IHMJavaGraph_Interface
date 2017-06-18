@@ -5,6 +5,8 @@ package classes;
 
 import java.util.ArrayList;
 
+import com.jme3.math.Vector3f;
+
 /**
  * @author nathan.bonnard
  *
@@ -52,6 +54,10 @@ public class Geolocation
 	public float getHeight() 
 	{
 		return height;
+	}
+	public Vector3f getCameraView()
+	{
+		return new Vector3f(0,0,0);
 	}
 
 	/**

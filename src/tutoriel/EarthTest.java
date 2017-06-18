@@ -115,9 +115,11 @@ public class EarthTest extends SimpleApplication
 		
 		viewPort.setBackgroundColor(new ColorRGBA(1f,0.2f,0.4f,1.0f));
 		
+		flyCam.setEnabled(false);
 		
 		ChaseCamera chaseCam = new ChaseCamera(cam,earth_geom,inputManager);
 		
+
 		chaseCam.setDragToRotate(true);
 		
 		chaseCam.setInvertVerticalAxis(true);
@@ -126,6 +128,8 @@ public class EarthTest extends SimpleApplication
 		chaseCam.setMaxVerticalRotation((float)Math.PI/2);
 		chaseCam.setMinDistance(7.5f);
 		chaseCam.setMaxDistance(30.0f);
+		
+
 		
 		//création ligne
 		Node LinesNode= new Node("LinesNode");
@@ -143,20 +147,12 @@ public class EarthTest extends SimpleApplication
 		LinesNode.setMaterial(mat);
 		LinesNode.attachChild(lineGeo);
 		rootNode.attachChild(LinesNode);
-		
-		
-		
 	}
-		
-	
-
-
 	
 	public void drawPath(ArrayList<Geolocation> path)
 	{
 		Vector3f oldVect = geoCoordTo3dCoord(path.get(0).getLatitude(), path.get(0).getLongitude()).mult(1+ path.get(0).getHeight()/100000);
-		
-		
+
 		Node allPathNode = new Node("path");
 		
 		for(int i = 1 ; i< path.size()-1; i++)

@@ -1,13 +1,11 @@
 package controller;
 
+import java.awt.List;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-
 import java.io.LineNumberReader;
-
 import java.sql.Date;
-
 import java.util.ArrayList;
 
 import classes.Airport;
@@ -32,6 +30,7 @@ public class Controller
 	private boolean alreadyPrintAirport;
 	private boolean printPathPlane;
 	private boolean volSelectionAsChanged;
+	private boolean planeView;
 	Date d;
 	
 	
@@ -54,6 +53,7 @@ public class Controller
 		alreadyPrintAirport=false;
 		printPathPlane=false;
 		volSelectionAsChanged=false;
+		planeView=false;
 	}
 	
 	
@@ -583,6 +583,25 @@ public class Controller
 		return printPathPlane;
 	}
 	
+	
+
+
+
+	/**
+	 * @return the planeView
+	 */
+	public boolean isPlaneView() {
+		return planeView;
+	}
+
+
+
+	/**
+	 * @param planeView the planeView to set
+	 */
+	public void setPlaneView(boolean planeView) {
+		this.planeView = planeView;
+	}
 
 
 
