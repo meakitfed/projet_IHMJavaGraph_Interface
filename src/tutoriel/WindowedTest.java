@@ -2,20 +2,18 @@ package tutoriel;
 
 import java.awt.BorderLayout;
 import java.awt.Canvas;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.swing.AbstractButton;
@@ -38,7 +36,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import com.jme3.input.ChaseCamera;
-import com.jme3.math.Vector3f;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeCanvasContext;
 
@@ -62,13 +59,13 @@ public class WindowedTest
 	private static JList selection;
 	private static JPanel informationVolSelection;
 	
-	
 	private static void createNewJFrame() 
 	{
 
 		frame = new JFrame("Java - Graphique - IHM");
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.addWindowListener(new WindowAdapter(){
+		frame.addWindowListener(new WindowAdapter()
+		{
 			@Override
 			public void windowClosed(WindowEvent e) 
 			{
@@ -76,8 +73,8 @@ public class WindowedTest
 			}
 		});
 		
-		
 		panel = new JPanel(new BorderLayout());
+		
 		/*panel.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -187,13 +184,12 @@ public class WindowedTest
 					chaseCam.setMaxVerticalRotation(0);
 					chaseCam.setMinDistance(0.5f);
 					chaseCam.setMaxDistance(10f);
-					
-		
+
 
 					button.setText(" Vue Globale ");
-				} else 
+				} 
+				else 
 				{
-					
 					ChaseCamera chaseCam = new ChaseCamera(canvasApplication.getCamera(),canvasApplication.getRootNode().getChild("earth"),canvasApplication.getInputManager());
 					chaseCam.setDragToRotate(true);
 					chaseCam.setInvertVerticalAxis(true);
@@ -296,8 +292,10 @@ public class WindowedTest
 			public void actionPerformed(ActionEvent e) 
 			{
 				AbstractButton event = (AbstractButton) e.getSource();
+				
 				if(!event.getModel().isSelected())
 				{
+					canvasApplication.suprAllAirportNode();
 					c.setPrintAirport(false);
 					c.setAlreadyPrintAirport(false);
 				}
@@ -309,6 +307,7 @@ public class WindowedTest
 				
 			}
 		});
+		
 		affichageTrajectoire.addActionListener(new ActionListener() 
 		{
 			@Override
@@ -333,7 +332,7 @@ public class WindowedTest
 		filtresVol.setLayout(new BoxLayout(filtresVol,BoxLayout.Y_AXIS));
 		
 
-		JComboBox listeAeroport = new JComboBox();
+		JComboBox<String> listeAeroport = new JComboBox<String>();
 		for(Airport a: c.getAirports())
 		{
 			if(!a.getShortName().equals("\\N"))
@@ -342,6 +341,19 @@ public class WindowedTest
 			}
 			
 		}
+		listeAeroport.addItemListener(new ItemListener() 
+        {
+        @Override
+        public void itemStateChanged(ItemEvent e) 
+        {
+            if(e.getStateChange() == ItemEvent.SELECTED) 
+            {
+            	canvasApplication.suprAllAirportNode();
+            	c.setAirportSelection(e.getItem().toString());
+            	c.setAlreadyPrintAirport(false);
+            }
+        }
+        });
 		JRadioButton radioButton1 = new JRadioButton("aéroport");
 		radioButton1.addActionListener(new ActionListener() 
 		{
@@ -351,28 +363,44 @@ public class WindowedTest
 				AbstractButton event = (AbstractButton) e.getSource();
 				if(!event.getModel().isSelected())
 				{
-					
+					canvasApplication.suprAllAirportNode();
+					c.setPrintOnlyAirport(false);
+					c.setAlreadyPrintAirport(false);
 				}
 				else
 				{
-					
+					canvasApplication.suprAllAirportNode();
+					c.setPrintOnlyAirport(true);
+					c.setAlreadyPrintAirport(false);
 				}
 				
 			}
 		});
-		JComboBox listePays = new JComboBox();
-		ArrayList list = new ArrayList() ;
+		JComboBox<String> listePays = new JComboBox<String>();
+		
+		ArrayList<String> list = new ArrayList<String>() ;
 		for(Airport a: c.getAirports())
 		{
 				list.add(a.getCountry());	
 		}
-        Set set = new HashSet() ;
+        Set<String> set = new HashSet<String>() ;
         set.addAll(list) ;
-        ArrayList<String> distinctList = new ArrayList<String>(set) ;
-        for(String s : distinctList)
+
+        for(String s : set)
 		{
-				listePays.addItem(s);	
+        	listePays.addItem(s);	
 		}
+        listePays.addItemListener(new ItemListener() 
+        {
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+            if(e.getStateChange() == ItemEvent.SELECTED) 
+            {
+            	c.setCountrySelection(e.getItem().toString());
+            	c.setAlreadyPrintAirport(false);
+            }
+        }
+        });
 		
 		JRadioButton radioButton2 = new JRadioButton("pays");
 		radioButton2.addActionListener(new ActionListener() 
@@ -383,11 +411,13 @@ public class WindowedTest
 				AbstractButton event = (AbstractButton) e.getSource();
 				if(!event.getModel().isSelected())
 				{
-					
+					c.setPrintOnlyCountry(false);
+					c.setAlreadyPrintAirport(false);
 				}
 				else
 				{
-					
+					c.setAlreadyPrintAirport(false);
+					c.setPrintOnlyCountry(true);
 				}
 				
 			}

@@ -31,6 +31,10 @@ public class Controller
 	private boolean printPathPlane;
 	private boolean volSelectionAsChanged;
 	private boolean planeView;
+	private String airportSelection;
+	private String countrySelection;
+	private boolean printOnlyAirport;
+	private boolean printOnlyCountry;
 	Date d;
 	
 	
@@ -54,6 +58,8 @@ public class Controller
 		printPathPlane=false;
 		volSelectionAsChanged=false;
 		planeView=false;
+		printOnlyAirport=false;
+		printOnlyCountry=false;
 	}
 	
 	
@@ -107,8 +113,6 @@ public class Controller
 			e.printStackTrace();
 		}
 	}
-	
-	
 	
 	public long getLastUpdateTime(String path)
 	{
@@ -523,6 +527,43 @@ public class Controller
 	public int getSpeedTime() {
 		return speedTime;
 	}
+	
+
+
+
+	/**
+	 * @return the airportSelection
+	 */
+	public String getAirportSelection() {
+		return airportSelection;
+	}
+
+
+
+	/**
+	 * @param airportSelection the airportSelection to set
+	 */
+	public void setAirportSelection(String airportSelection) {
+		this.airportSelection = airportSelection;
+	}
+
+
+
+	/**
+	 * @return the countrySelection
+	 */
+	public String getCountrySelection() {
+		return countrySelection;
+	}
+
+
+
+	/**
+	 * @param countrySelection the countrySelection to set
+	 */
+	public void setCountrySelection(String countrySelection) {
+		this.countrySelection = countrySelection;
+	}
 
 
 
@@ -571,6 +612,7 @@ public class Controller
 	public void setPrintPlane(boolean printPlane) {
 		this.printPlane = printPlane;
 	}
+	
 	
 	
 
@@ -671,6 +713,43 @@ public class Controller
 	public Flight getVolSelection() 
 	{
 		return volSelection;
+	}
+	
+
+
+
+	/**
+	 * @return the printOnlyAirport
+	 */
+	public boolean isPrintOnlyAirport() {
+		return printOnlyAirport;
+	}
+
+
+
+	/**
+	 * @param printOnlyAirport the printOnlyAirport to set
+	 */
+	public void setPrintOnlyAirport(boolean printOnlyAirport) {
+		this.printOnlyAirport = printOnlyAirport;
+	}
+
+
+
+	/**
+	 * @return the printOnlyCountry
+	 */
+	public boolean isPrintOnlyCountry() {
+		return printOnlyCountry;
+	}
+
+
+
+	/**
+	 * @param printOnlyCountry the printOnlyCountry to set
+	 */
+	public void setPrintOnlyCountry(boolean printOnlyCountry) {
+		this.printOnlyCountry = printOnlyCountry;
 	}
 
 
