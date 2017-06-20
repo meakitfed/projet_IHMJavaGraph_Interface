@@ -32,8 +32,10 @@ public class EarthTest extends SimpleApplication
 	private static final float TEXTURE_LAT_OFFSET = -0.2f;
 	private static final float TEXTURE_LON_OFFSET = 2.8f;
 	private Controller controller;
+	private ChaseCamera chaseCam;
 
 	private ArrayList<CountryNode> countryNodes = new ArrayList<CountryNode>();
+	
 	
 	public EarthTest(Controller controller)
 	{
@@ -199,7 +201,8 @@ public class EarthTest extends SimpleApplication
 		
 		flyCam.setEnabled(false);
 		
-		ChaseCamera chaseCam = new ChaseCamera(cam,earth_geom,inputManager);
+		
+		chaseCam = new ChaseCamera(cam,earth_geom,inputManager);
 		
 
 		chaseCam.setDragToRotate(true);
@@ -212,7 +215,6 @@ public class EarthTest extends SimpleApplication
 		chaseCam.setMaxDistance(30.0f);
 		
 
-		
 		//création ligne
 		Node LinesNode= new Node("LinesNode");
 		Vector3f oldVect = new Vector3f(1,0,0);
@@ -250,6 +252,7 @@ public class EarthTest extends SimpleApplication
 			lineGeo.setMaterial(mat2);						
 			mat.getAdditionalRenderState().setLineWidth(4.0f);
 			mat.setColor("Color",ColorRGBA.randomColor());
+			mat2.setColor("Color",ColorRGBA.randomColor());
 			pathNode.setMaterial(mat);
 			pathNode.attachChild(lineGeo);
 			allPathNode.attachChild(pathNode);
@@ -257,8 +260,6 @@ public class EarthTest extends SimpleApplication
 		}
 		rootNode.attachChild(allPathNode);
 	}
-	
-
 
 	private static Vector3f geoCoordTo3dCoord(float lat, float lon)
 	{
@@ -310,19 +311,14 @@ public class EarthTest extends SimpleApplication
 				plane_geom.setMaterial(mat);
 				planeNode.attachChild(plane_geom);
 				
-				if(nodeArrival.getChild(f.getId())==null)
-				{
-					
-					nodeArrival.flightsNode.add(planeNode);
-					nodeArrival.attachChild(nodeArrival.findFlightNodeNamed(f.getId()));
-				}
-				if(nodeDeparture.getChild(f.getId())==null)
-				{
-					nodeDeparture.flightsNode.add(planeNode);
-					nodeDeparture.attachChild(nodeArrival.findFlightNodeNamed(f.getId()));
-				}
+
+				nodeArrival.flightsNode.add(planeNode);
+				nodeArrival.attachChild(nodeArrival.findFlightNodeNamed(f.getId()));
+
+				nodeDeparture.flightsNode.add(planeNode);
+				nodeDeparture.attachChild(nodeArrival.findFlightNodeNamed(f.getId()));
 				
-				
+
 				//deplace l'avion
 				planeNode.setLocalTranslation(v.mult(1+ (f.getPlane().getGeolocation().getHeight())/100000));
 				planeNode.scale(0.05f);
@@ -331,7 +327,7 @@ public class EarthTest extends SimpleApplication
 				planeNode.rotate(0,(float)(f.getPlane().getDirection()*(Math.PI/180)),0);
 				
 			}
-			else
+			else 
 			{
 				Vector3f v = geoCoordTo3dCoord(f.getPlane().getGeolocation().getLatitude(), f.getPlane().getGeolocation().getLongitude());
 				
@@ -343,7 +339,7 @@ public class EarthTest extends SimpleApplication
 					n.rotate((float)Math.PI/2,0,0);
 					n.rotate(0,(float)(f.getPlane().getDirection()*(Math.PI/180)),0);
 				}
-				if(nodeDeparture.getChild(f.getId())!=null)
+				else if(nodeDeparture.getChild(f.getId())!=null)
 				{
 					Node n =nodeDeparture.findFlightNodeNamed(f.getId());
 					n.setLocalTranslation(v.mult(1+ (f.getPlane().getGeolocation().getHeight())/100000));
@@ -435,6 +431,23 @@ public class EarthTest extends SimpleApplication
 			
 		}
 	}
+
+	/**
+	 * @return the chaseCam
+	 */
+	public ChaseCamera getChaseCam() {
+		return chaseCam;
+	}
+
+	/**
+	 * @param chaseCam the chaseCam to set
+	 */
+	public void setChaseCam(ChaseCamera chaseCam) {
+		this.chaseCam = chaseCam;
+	}
+	
+	
+	
 
 
 }

@@ -8,12 +8,14 @@ import Data.FlightNode;
 
 public class AirportNode extends Node
 {
+	public Node airport;
+	public ArrayList<FlightNode> flightsNode = new ArrayList<FlightNode>();
+	
 	public AirportNode(String name)
 	{
 		super(name);
 	}
-	public Node airport;
-	public ArrayList<FlightNode> flightsNode = new ArrayList<FlightNode>();
+	
 	public FlightNode findFlightNodeNamed(String name)
 	{
 		for(FlightNode f : flightsNode)

@@ -11,6 +11,7 @@ public class CountryNode extends Node
 		super(name);
 	}
 	public ArrayList<AirportNode> airportNodes = new ArrayList<AirportNode>();
+	
 	public AirportNode findAirportNodeNamed(String name)
 	{
 		for(AirportNode c : airportNodes)

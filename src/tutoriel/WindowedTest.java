@@ -36,6 +36,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import com.jme3.input.ChaseCamera;
+import com.jme3.scene.CameraNode;
+import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeCanvasContext;
 
@@ -174,16 +176,18 @@ public class WindowedTest
 				{
 					c.setPlaneView(true);
 					
+					//CameraNode camera = new CameraNode("cam",canvasApplication.getChaseCam());
 					
-					ChaseCamera chaseCam = new ChaseCamera(canvasApplication.getCamera(),canvasApplication.getRootNode().getChild(c.getVolSelection().getId()),canvasApplication.getInputManager());
+					//((Node)canvasApplication.getRootNode().getChild(c.getVolSelection().getId())).attachChild(camera);
+				
 					
-					chaseCam.setDragToRotate(false);
+					/*chaseCam.setDragToRotate(false);
 					chaseCam.setInvertVerticalAxis(false);
 					chaseCam.setRotationSpeed(0.0f);
 					chaseCam.setMinVerticalRotation(0);
 					chaseCam.setMaxVerticalRotation(0);
 					chaseCam.setMinDistance(0.5f);
-					chaseCam.setMaxDistance(10f);
+					chaseCam.setMaxDistance(10f);*/
 
 
 					button.setText(" Vue Globale ");
