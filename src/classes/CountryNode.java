@@ -27,23 +27,8 @@ public class CountryNode extends Node
 	{
 		for(AirportNode a : airportNodes)
 		{
-			if(a.airport!=null)
-			{
-				
-				a.airport.removeFromParent();
-				
-				
-				a.airport=null;
-			}
-			
+			a.removeFromParent();			
 		}
 	}
-	public void suprOtherNodeFlight(String id)
-	{
-		for(AirportNode a : airportNodes)
-		{
-			a.suprOtherNodeFlight(id);
-			
-		}
-	}
+
 }
