@@ -160,7 +160,7 @@ public class Controller
 	
 	/**
 	 * 
-	 * update les donnÃ©es des vols avec les donnÃ©es 
+	 * update les données des vols avec les données 
 	 * 
 	 * @param path vers le fichier
 	 */
@@ -168,7 +168,6 @@ public class Controller
 	{
 		if (currentTime + t0  > new Long((long) 1496195547396f))
 		{
-			//System.out.println("dernier temps atteint");
 			fin =true;
 		}
 		try 			
@@ -221,7 +220,7 @@ public class Controller
 				}
 				catch(NumberFormatException e)
 				{
-					//System.err.println("DonnÃ©es erronÃ©es");
+					//System.err.println("Données erronées");
 					
 				}
 					
@@ -266,10 +265,11 @@ public class Controller
 				
 			String line= bufRead.readLine();
 					
-			
-			while(line != null)
+			String[] array;
+			array = line.split("///");
+			while(line != null && currentTime>(Long.parseLong(array[0])-t0))
 			{
-				String[] array = line.split("///");
+				array = line.split("///");
 				try
 				{
 					if(f.getId().equals(array[1].trim())) 
@@ -283,7 +283,7 @@ public class Controller
 				}
 				catch(NumberFormatException e)
 				{
-					System.err.println("DonnÃ©es non conventionnelles");
+					System.err.println("Données non conventionnelles");
 				}
 					
 				line = bufRead.readLine();
@@ -298,15 +298,15 @@ public class Controller
 		{
 			e.printStackTrace();
 		}
-		System.out.println(toReturn);
+
 		return toReturn;
 	}
 	
 
 	/**
-	 * Cherche le vol d'id entrÃ© en parametre dans l'arrayist flights
+	 * Cherche le vol d'id entré en parametre dans l'arrayist flights
 	 * 
-	 * @param id id du vol recherchÃ©
+	 * @param id id du vol recherché
 	 * @return le vol recherche ou null si ce vol n'est pas dans la liste
 	 */
 	public Flight getFlightByID(String id)

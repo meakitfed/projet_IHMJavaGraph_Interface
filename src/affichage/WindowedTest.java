@@ -1,4 +1,4 @@
-package tutoriel;
+package affichage;
 
 import java.awt.BorderLayout;
 import java.awt.Canvas;
@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
@@ -76,20 +77,7 @@ public class WindowedTest
 				canvasApplication.stop();
 			}
 		});
-		/*canvasApplication.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				System.out.println("CREATE HEATMAP");
-				
-				canvasApplication.enqueue(new Callable<Object>(
-						public Object call() throws Exception 
-						{
-							canvasApplication.addHeatMap();
-							return null;
-						});
-			}
-		});*/
+		
 		
 		panel = new JPanel(new BorderLayout());
 		
@@ -105,22 +93,30 @@ public class WindowedTest
 		tempsReel.setPreferredSize(new Dimension(200,100));
 		tempsReel.setBorder(BorderFactory.createTitledBorder("Temps"));
 		
-		JButton demarrer=new JButton("DÃ©marrer");
+		JButton demarrer=new JButton("Démarrer");
+		
 		demarrer.addActionListener(new ActionListener() 
 		{
 			@Override
 			public void actionPerformed(ActionEvent event) 
 			{
-				JButton button = (JButton) event.getSource();
-				if (button.getText().equals("DÃ©marrer")) 
+				canvasApplication.enqueue(new Callable<Object>()
 				{
-					c.setPause(false);
-					button.setText("Pause");
-				} else 
-				{
-					c.setPause(true);
-					button.setText("DÃ©marrer");
-				}
+					public Object call() throws Exception {
+					JButton button = (JButton) event.getSource();
+					if (button.getText().equals("Démarrer")) 
+					{
+						c.setPause(false);
+						button.setText("Pause");
+					} else 
+					{
+						c.setPause(true);
+						button.setText("Démarrer");
+					}
+					return null;
+					}
+				});
+				
 			}
 		});
 		
@@ -132,11 +128,18 @@ public class WindowedTest
 			@Override
 			public void stateChanged(ChangeEvent e) 
 			{
-				JSlider source = (JSlider)e.getSource();
-			    if (!source.getValueIsAdjusting()) 
-			    {
-			        c.setSpeedTime(source.getValue()) ;
-			    }	
+				
+			    canvasApplication.enqueue(new Callable<Object>()
+				{
+					public Object call() throws Exception {
+						JSlider source = (JSlider)e.getSource();
+					    if (!source.getValueIsAdjusting()) 
+					    {
+					        c.setSpeedTime(source.getValue()) ;
+					    }
+					return null;
+					}
+				});
 			}
 		});
 		timePanel.add(time);
@@ -154,7 +157,7 @@ public class WindowedTest
 		
 		DefaultListModel dlm = new DefaultListModel();
 		selection = new JList(dlm);
-		dlm.addElement("Aucune sÃ©lection");
+		dlm.addElement("Aucune sélection");
 		
 		for(Flight f : c.getFlights())
 		{
@@ -163,7 +166,7 @@ public class WindowedTest
 		
 		JLabel id = new JLabel(" Identifiant : ");
 		JLabel depart = new JLabel(" Depart : ");
-		JLabel arrive = new JLabel(" ArrivÃ©e : ");
+		JLabel arrive = new JLabel(" Arrivée : ");
 		JLabel vitesse = new JLabel(" Vitesse : ");
 		JLabel altitude = new JLabel(" Altitude : ");
 		JLabel typeAvion = new JLabel(" Type avion : ");
@@ -174,63 +177,104 @@ public class WindowedTest
 			@Override
 			public void actionPerformed(ActionEvent event) 
 			{
-				JButton button = (JButton) event.getSource();
-				if (button.getText().equals(" Vue Avion ")) 
+				
+				canvasApplication.enqueue(new Callable<Object>()
 				{
-					c.setPlaneView(true);
-					
+					public Object call() throws Exception {
+						JButton button = (JButton) event.getSource();
+						if (button.getText().equals(" Vue Avion ")) 
+						{
+							c.setPlaneView(true);
+							
 
 
 
-					button.setText(" Vue Globale ");
-				} 
-				else 
-				{
-					ChaseCamera chaseCam = new ChaseCamera(canvasApplication.getCamera(),canvasApplication.getRootNode().getChild("earth"),canvasApplication.getInputManager());
-					chaseCam.setDragToRotate(true);
-					chaseCam.setInvertVerticalAxis(true);
-					chaseCam.setRotationSpeed(10.0f);
-					chaseCam.setMinVerticalRotation((float)-(Math.PI/2-0.0001f));
-					chaseCam.setMaxVerticalRotation((float)Math.PI/2);
-					chaseCam.setMinDistance(7.5f);
-					chaseCam.setMaxDistance(30.0f);
-					
-					c.setPlaneView(false);
-					button.setText(" Vue Avion ");
-				}
+							button.setText(" Vue Globale ");
+						} 
+						else 
+						{
+							ChaseCamera chaseCam = new ChaseCamera(canvasApplication.getCamera(),canvasApplication.getRootNode().getChild("earth"),canvasApplication.getInputManager());
+							chaseCam.setDragToRotate(true);
+							chaseCam.setInvertVerticalAxis(true);
+							chaseCam.setRotationSpeed(10.0f);
+							chaseCam.setMinVerticalRotation((float)-(Math.PI/2-0.0001f));
+							chaseCam.setMaxVerticalRotation((float)Math.PI/2);
+							chaseCam.setMinDistance(7.5f);
+							chaseCam.setMaxDistance(30.0f);
+							
+							c.setPlaneView(false);
+							button.setText(" Vue Avion ");
+						}
+					return null;
+					}
+				});
 			}
+			
 		});
 		selection.addListSelectionListener(new ListSelectionListener() 
 		{
             @Override
             public void valueChanged(ListSelectionEvent e) 
             {
-                if (!e.getValueIsAdjusting()) 
-                {
-                    c.setVolSelection(c.getFlightByID((String)selection.getSelectedValue()));
-                    Flight f= c.getVolSelection();
-                    if(f!=null)
-                    {
-                    	c.setVolSelectionAsChanged(true);
-                    	id.setText(" Identifiant : "+f.getId());
-                		depart.setText(" Depart : "+f.getDeparture().getCityName());
-                		arrive.setText(" ArrivÃ©e : "+f.getArrival().getCityName());
-                		vitesse.setText(" Vitesse : "+(f.getPlane().getSpeedX()+f.getPlane().getSpeedY())+" km/h");
-                		altitude.setText(" Altitude : "+f.getPlane().getGeolocation().getHeight()+" m ");
-                		typeAvion.setText(" Type avion : "+f.getModelAvion());
-                		
-                    }
-                    else
-                    {
-                    	c.setVolSelectionAsChanged(false);
-                    	id.setText(" Identifiant : ");
-                		depart.setText(" Depart : ");
-                		arrive.setText(" ArrivÃ©e : ");
-                		vitesse.setText(" Vitesse : ");
-                		altitude.setText(" Altitude : ");
-                		typeAvion.setText(" Type avion : ");
-                    }
-                }
+               
+                canvasApplication.enqueue(new Callable<Object>()
+				{
+					public Object call() throws Exception {
+						 if (!e.getValueIsAdjusting() && !c.isPrintOnlyAirport() && !c.isPrintOnlyCountry()) 
+			                {
+			                    c.setVolSelection(c.getFlightByID((String)selection.getSelectedValue()));
+			                    Flight f= c.getVolSelection();
+			                    if(f!=null)
+			                    {
+			                    	c.setVolSelectionAsChanged(true);
+			                    	id.setText(" Identifiant : "+f.getId());
+			                		depart.setText(" Depart : "+f.getDeparture().getCityName());
+			                		arrive.setText(" Arrivée : "+f.getArrival().getCityName());
+			                		vitesse.setText(" Vitesse : "+(f.getPlane().getSpeedX()+f.getPlane().getSpeedY())+" km/h");
+			                		altitude.setText(" Altitude : "+f.getPlane().getGeolocation().getHeight()+" m ");
+			                		typeAvion.setText(" Type avion : "+f.getModelAvion());
+			                		
+			                    }
+			                    else
+			                    {
+			                    	c.setVolSelectionAsChanged(false);
+			                    	id.setText(" Identifiant : ");
+			                		depart.setText(" Depart : ");
+			                		arrive.setText(" Arrivée : ");
+			                		vitesse.setText(" Vitesse : ");
+			                		altitude.setText(" Altitude : ");
+			                		typeAvion.setText(" Type avion : ");
+			                    }
+			                }
+						 else
+						 {
+							 Flight f = c.getFlightByID((String)selection.getSelectedValue());
+							 c.setVolSelectionAsChanged(false);
+							 if(f!=null)
+			                    {
+			                    	c.setVolSelectionAsChanged(true);
+			                    	id.setText(" Identifiant : "+f.getId());
+			                		depart.setText(" Depart : "+f.getDeparture().getCityName());
+			                		arrive.setText(" Arrivée : "+f.getArrival().getCityName());
+			                		vitesse.setText(" Vitesse : "+(f.getPlane().getSpeedX()+f.getPlane().getSpeedY())+" km/h");
+			                		altitude.setText(" Altitude : "+f.getPlane().getGeolocation().getHeight()+" m ");
+			                		typeAvion.setText(" Type avion : "+f.getModelAvion());
+			                		
+			                    }
+			                    else
+			                    {
+			                    	c.setVolSelectionAsChanged(false);
+			                    	id.setText(" Identifiant : ");
+			                		depart.setText(" Depart : ");
+			                		arrive.setText(" Arrivée : ");
+			                		vitesse.setText(" Vitesse : ");
+			                		altitude.setText(" Altitude : ");
+			                		typeAvion.setText(" Type avion : ");
+			                    }
+						 }
+					return null;
+					}
+				});
             }
         });
 	
@@ -243,7 +287,7 @@ public class WindowedTest
 		
 		informationVolSelection = new JPanel();
 		informationVolSelection.setPreferredSize(new Dimension(200,200));
-		informationVolSelection.setBorder(BorderFactory.createTitledBorder("Infos vol sÃ©lectionnÃ©"));
+		informationVolSelection.setBorder(BorderFactory.createTitledBorder("Infos vol sélectionné"));
 		informationVolSelection.setLayout(new GridLayout(7,1,5,0));
 		
 		
@@ -262,7 +306,7 @@ public class WindowedTest
 		affichage.setBorder(BorderFactory.createTitledBorder("Affichage"));
 		affichage.setLayout(new FlowLayout());
 		
-		JCheckBox affichageAeroport = new JCheckBox("aÃ©roport",true);
+		JCheckBox affichageAeroport = new JCheckBox("aéroport",true);
 		JCheckBox affichageAvions = new JCheckBox("avions",true);
 		JCheckBox affichageTrajectoire = new JCheckBox("trajectoire",false);
 		
@@ -271,15 +315,22 @@ public class WindowedTest
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				AbstractButton event = (AbstractButton) e.getSource();
-				if(!event.getModel().isSelected())
+				canvasApplication.enqueue(new Callable<Object>()
 				{
-					c.setPrintPlane(false);
-				}
-				else
-				{
-					c.setPrintPlane(true);
-				}
+					public Object call() throws Exception 
+					{
+						AbstractButton event = (AbstractButton) e.getSource();
+						if(!event.getModel().isSelected())
+						{
+							c.setPrintPlane(false);
+						}
+						else
+						{
+							c.setPrintPlane(true);
+						}
+					return null;
+					}
+				});
 				
 			}
 		});
@@ -288,19 +339,27 @@ public class WindowedTest
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				AbstractButton event = (AbstractButton) e.getSource();
 				
-				if(!event.getModel().isSelected())
+				canvasApplication.enqueue(new Callable<Object>()
 				{
-					canvasApplication.suprAllAirportNode();
-					c.setPrintAirport(false);
-					c.setAlreadyPrintAirport(false);
-				}
-				else
-				{
-					c.setPrintAirport(true);
-					c.setAlreadyPrintAirport(false);
-				}
+					public Object call() throws Exception 
+					{
+						AbstractButton event = (AbstractButton) e.getSource();
+						
+						if(!event.getModel().isSelected())
+						{
+							canvasApplication.suprAllAirportNode();
+							c.setPrintAirport(false);
+							c.setAlreadyPrintAirport(false);
+						}
+						else
+						{
+							c.setPrintAirport(true);
+							c.setAlreadyPrintAirport(false);
+						}
+					return null;
+					}
+				});
 				
 			}
 		});
@@ -310,15 +369,24 @@ public class WindowedTest
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				AbstractButton event = (AbstractButton) e.getSource();
-				if(!event.getModel().isSelected())
+				
+				canvasApplication.enqueue(new Callable<Object>()
 				{
-					c.setPrintPathPlane(false);
-				}
-				else
-				{
-					c.setPrintPathPlane(true);
-				}
+					public Object call() throws Exception 
+					{
+						AbstractButton event = (AbstractButton) e.getSource();
+						if(!event.getModel().isSelected())
+						{
+							c.setPrintPathPlane(false);
+							canvasApplication.getRootNode().getChild("path").removeFromParent();
+						}
+						else
+						{
+							c.setPrintPathPlane(true);
+						}
+					return null;
+					}
+				});
 				
 			}
 		});
@@ -355,33 +423,57 @@ public class WindowedTest
         @Override
         public void itemStateChanged(ItemEvent e) 
         {
-            if(e.getStateChange() == ItemEvent.SELECTED) 
-            {
-            	canvasApplication.suprAllAirportNode();
-            	c.setAirportSelection(e.getItem().toString());
-            	c.setAlreadyPrintAirport(false);
-            }
+            
+            canvasApplication.enqueue(new Callable<Object>()
+			{
+				public Object call() throws Exception 
+				{
+					if(e.getStateChange() == ItemEvent.SELECTED) 
+		            {
+		            	canvasApplication.suprAllAirportNode();
+		            	c.setAirportSelection(e.getItem().toString());
+		            	c.setAlreadyPrintAirport(false);
+		            }
+				return null;
+				}
+			});
         }
         });
+		
 		JRadioButton radioButton1 = new JRadioButton("aéroport");
+		JRadioButton radioButton2 = new JRadioButton("pays");
+		
 		radioButton1.addActionListener(new ActionListener() 
 		{
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				AbstractButton event = (AbstractButton) e.getSource();
-				if(!event.getModel().isSelected())
-				{
-					canvasApplication.suprAllAirportNode();
-					c.setPrintOnlyAirport(false);
-					c.setAlreadyPrintAirport(false);
-				}
-				else
-				{
-					canvasApplication.suprAllAirportNode();
-					c.setPrintOnlyAirport(true);
-					c.setAlreadyPrintAirport(false);
-				}
+				
+				 canvasApplication.enqueue(new Callable<Object>()
+					{
+						public Object call() throws Exception 
+						{
+							AbstractButton event = (AbstractButton) e.getSource();
+							if(!event.getModel().isSelected())
+							{
+								canvasApplication.suprAllAirportNode();
+								c.setPrintOnlyAirport(false);
+								c.setAlreadyPrintAirport(false);
+							}
+							else
+							{
+								radioButton2.setSelected(false);
+								canvasApplication.suprAllAirportNode();
+								c.setCountrySelection(null);
+								c.setPrintOnlyAirport(true);
+								c.setAlreadyPrintAirport(false);
+								c.setPrintOnlyCountry(false);
+								c.setVolSelection(null);
+
+							}
+						return null;
+						}
+					});
 				
 			}
 		});
@@ -404,34 +496,52 @@ public class WindowedTest
 		}
         listePays.addItemListener(new ItemListener() 
         {
-        @Override
-        public void itemStateChanged(ItemEvent e) {
-            if(e.getStateChange() == ItemEvent.SELECTED) 
-            {
-            	c.setCountrySelection(e.getItem().toString());
-            	c.setAlreadyPrintAirport(false);
-            }
-        }
+	        @Override
+	        public void itemStateChanged(ItemEvent e) {
+	            
+	            canvasApplication.enqueue(new Callable<Object>()
+				{
+					public Object call() throws Exception 
+					{
+						if(e.getStateChange() == ItemEvent.SELECTED) 
+			            {
+			            	c.setCountrySelection(e.getItem().toString());
+			            	c.setAlreadyPrintAirport(false);
+			            }
+					return null;
+					}
+				});
+	        }
         });
 		
-		JRadioButton radioButton2 = new JRadioButton("pays");
+		
 		radioButton2.addActionListener(new ActionListener() 
 		{
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				AbstractButton event = (AbstractButton) e.getSource();
-				if(!event.getModel().isSelected())
-				{
-					c.setPrintOnlyCountry(false);
-					c.setAlreadyPrintAirport(false);
-				}
-				else
-				{
-					c.setAlreadyPrintAirport(false);
-					c.setPrintOnlyCountry(true);
-				}
-				
+				 canvasApplication.enqueue(new Callable<Object>()
+					{
+						public Object call() throws Exception 
+						{
+							AbstractButton event = (AbstractButton) e.getSource();
+							if(!event.getModel().isSelected())
+							{
+								c.setPrintOnlyCountry(false);
+								c.setAlreadyPrintAirport(false);
+							}
+							else
+							{
+								c.setAlreadyPrintAirport(false);
+								c.setPrintOnlyCountry(true);
+								radioButton1.setSelected(false);
+								c.setPrintOnlyAirport(false);
+								c.setAirportSelection(null);
+								c.setVolSelection(null);
+							}
+						return null;
+						}
+					});
 			}
 		});
 		

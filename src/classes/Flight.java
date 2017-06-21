@@ -25,9 +25,9 @@ public class Flight
 	{
 		String str = "";
 		
-		str+="Identificant : "+ id +
+		str+="Identifiant : "+ id +
 				"\nDepart : "+departure.getCityName()+
-				"\nArrivé : "+arrival.getCityName()+
+				"\nArrivée : "+arrival.getCityName()+
 				"\nVitesse : "+(plane.getSpeedX()+plane.getSpeedY())+
 				"\nAltitude : "+plane.getGeolocation().getHeight()+
 				"\nType Avion : "+modelAvion;

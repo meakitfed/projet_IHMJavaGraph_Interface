@@ -1,4 +1,4 @@
-package tutoriel;
+package affichage;
 
 import java.awt.Color;
 import java.awt.event.ActionListener;
@@ -77,7 +77,7 @@ public class EarthTest extends SimpleApplication
 		{
 			suprOtherNodeFlight(null);
 		}
-		if(controller.getVolSelection()!=null && controller.isPrintPathPlane() && controller.isVolSelectionAsChanged())
+		if(controller.getVolSelection()!=null && controller.isPrintPathPlane() )
 		{
 			if(rootNode.getChild("path")!=null)
 			{
@@ -108,6 +108,7 @@ public class EarthTest extends SimpleApplication
 		}
 		return null;
 	}
+	
 	@Override
 	public void simpleInitApp() 
 	{
@@ -140,14 +141,12 @@ public class EarthTest extends SimpleApplication
 			b.airportNodes.add(c);
 		}
 
-
 		paintAirport(controller.getAirports());
-		
 		DirectionalLight directionalLight = new DirectionalLight(new Vector3f(-2,-10,1));
 		directionalLight.setColor(ColorRGBA.White.mult(1.3f));
 		rootNode.addLight(directionalLight);
 		
-		viewPort.setBackgroundColor(new ColorRGBA(1f,0.2f,0.4f,1.0f));
+		viewPort.setBackgroundColor(ColorRGBA.Black);
 		
 		flyCam.setEnabled(false);
 		
@@ -165,7 +164,7 @@ public class EarthTest extends SimpleApplication
 		chaseCam.setMaxDistance(30.0f);
 		
 
-		//crÃ©ation ligne
+		//création ligne
 		Node LinesNode= new Node("LinesNode");
 		Vector3f oldVect = new Vector3f(1,0,0);
 		Vector3f newVect = new Vector3f(-1,1,0);
@@ -177,7 +176,7 @@ public class EarthTest extends SimpleApplication
 		lineGeo.setMaterial(mat2);
 		
 		mat.getAdditionalRenderState().setLineWidth(4.0f);
-		mat.setColor("Color",ColorRGBA.Green);
+		mat.setColor("Color",ColorRGBA.Black);
 		LinesNode.setMaterial(mat);
 		LinesNode.attachChild(lineGeo);
 		rootNode.attachChild(LinesNode);
@@ -185,30 +184,34 @@ public class EarthTest extends SimpleApplication
 	
 	public void drawPath(ArrayList<Geolocation> path)
 	{
-		Vector3f oldVect = geoCoordTo3dCoord(path.get(0).getLatitude(), path.get(0).getLongitude()).mult(1+ path.get(0).getHeight()/100000);
-
-		Node allPathNode = new Node("path");
-		
-		for(int i = 1 ; i< path.size()-1; i++)
+		if(path.size()>0)
 		{
-			Vector3f newVect = geoCoordTo3dCoord(path.get(i).getLatitude(), path.get(i).getLongitude()).mult(1+ path.get(i).getHeight()/100000);
+			Vector3f oldVect = geoCoordTo3dCoord(path.get(0).getLatitude(), path.get(0).getLongitude()).mult(1+ path.get(0).getHeight()/100000);
+			Node allPathNode = new Node("path");
 			
-			Node pathNode = new Node();
-			
-			Line line = new Line(oldVect, newVect);
-			Geometry lineGeo = new Geometry("lineGeo",line);
-			Material mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-			Material mat2 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-			lineGeo.setMaterial(mat2);						
-			mat.getAdditionalRenderState().setLineWidth(4.0f);
+			for(int i = 1 ; i< path.size()-1; i++)
+			{
+				Vector3f newVect = geoCoordTo3dCoord(path.get(i).getLatitude(), path.get(i).getLongitude()).mult(1+ path.get(i).getHeight()/100000);
+				
+				Node pathNode = new Node();
+				
+				Line line = new Line(oldVect, newVect);
+				Geometry lineGeo = new Geometry("lineGeo",line);
+				Material mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+				Material mat2 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+				lineGeo.setMaterial(mat2);						
+				mat.getAdditionalRenderState().setLineWidth(4.0f);
 
-			mat2.setColor("Color",ColorRGBA.Magenta);
-			pathNode.setMaterial(mat);
-			pathNode.attachChild(lineGeo);
-			allPathNode.attachChild(pathNode);
-			oldVect = newVect;
+				mat2.setColor("Color",ColorRGBA.Magenta);
+				pathNode.setMaterial(mat);
+				pathNode.attachChild(lineGeo);
+				allPathNode.attachChild(pathNode);
+				oldVect = newVect;
+			}
+			rootNode.attachChild(allPathNode);
 		}
-		rootNode.attachChild(allPathNode);
+
+		
 	}
 
 	private static Vector3f geoCoordTo3dCoord(float lat, float lon)
@@ -333,6 +336,22 @@ public class EarthTest extends SimpleApplication
 							}
 						}
 					}
+					else if(controller.isPrintOnlyAirport())
+					{
+						if(controller.getAirportSelection()!= null  && 
+								(f.getArrival().getShortName().equals(controller.getAirportSelection())) || f.getDeparture().getShortName().equals(controller.getAirportSelection()))
+						{
+							displayPlane(f);
+							f.getPlane().setisArrived(f.landed());
+						}
+						else
+						{
+							if(rootNode.getChild(f.getId())!=null)
+							{
+								rootNode.getChild(f.getId()).removeFromParent();
+							}
+						}
+					}
 					else
 					{
 						displayPlane(f);
@@ -373,7 +392,7 @@ public class EarthTest extends SimpleApplication
 						
 						BitmapText etiquette = new BitmapText(gFont, false);
 						
-						etiquette.setColor(ColorRGBA.Blue);
+						etiquette.setColor(ColorRGBA.White);
 						etiquette.setText(controller.getVolSelection().bitMapInfoVol());
 						etiquette.setSize(gFont.getCharSet().getRenderedSize());
 						etiquette.scale(0.10f);
@@ -382,14 +401,9 @@ public class EarthTest extends SimpleApplication
 						text_node.attachChild(etiquette);
 						BillboardControl control = new BillboardControl();
 						text_node.addControl(control);
-						
 						((Node)rootNode.getChild(controller.getVolSelection().getId())).attachChild(text_node);
 					}
 				}
-				
-				
-				
-				
 			}
 			
 		}
