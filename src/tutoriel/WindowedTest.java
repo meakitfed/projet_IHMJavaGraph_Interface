@@ -13,7 +13,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.AbstractButton;
@@ -35,6 +37,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import com.jme3.font.BitmapText;
 import com.jme3.input.ChaseCamera;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
@@ -153,6 +156,7 @@ public class WindowedTest
 		DefaultListModel dlm = new DefaultListModel();
 		selection = new JList(dlm);
 		dlm.addElement("Aucune sélection");
+		
 		for(Flight f : c.getFlights())
 		{
 			dlm.addElement(f.getId());
@@ -226,6 +230,7 @@ public class WindowedTest
                 		vitesse.setText(" Vitesse : "+(f.getPlane().getSpeedX()+f.getPlane().getSpeedY())+" km/h");
                 		altitude.setText(" Altitude : "+f.getPlane().getGeolocation().getHeight()+" m ");
                 		typeAvion.setText(" Type avion : "+f.getModelAvion());
+                		
                     }
                     else
                     {
@@ -337,11 +342,23 @@ public class WindowedTest
 		
 
 		JComboBox<String> listeAeroport = new JComboBox<String>();
+		
+		List<String> listTemp = new ArrayList<String>() ;
+		
 		for(Airport a: c.getAirports())
 		{
-			if(!a.getShortName().equals("\\N"))
+			listTemp.add(a.getShortName());	
+		}
+		
+		listTemp=removeDuplicatedItems(listTemp);
+        
+		Collections.sort(listTemp);
+		
+		for(String s : listTemp)
+		{
+			if(!s.equals("\\N"))
 			{
-				listeAeroport.addItem(a.getShortName());
+				listeAeroport.addItem(s);
 			}
 			
 		}
@@ -380,18 +397,20 @@ public class WindowedTest
 				
 			}
 		});
+		
 		JComboBox<String> listePays = new JComboBox<String>();
 		
-		ArrayList<String> list = new ArrayList<String>() ;
-
+		listTemp.removeAll(listTemp);
+		
 		for(Airport a: c.getAirports())
 		{
-				list.add(a.getCountry());	
+			listTemp.add(a.getCountry());	
 		}
-        Set<String> set = new HashSet<String>() ;
-        set.addAll(list) ;
-
-        for(String s : set)
+		
+		listTemp=removeDuplicatedItems(listTemp);
+        
+		Collections.sort(listTemp);
+        for(String s : listTemp)
 		{
         	listePays.addItem(s);	
 		}
@@ -484,7 +503,12 @@ public class WindowedTest
 	public static JPanel getInformationVolSelection() {
 		return informationVolSelection;
 	}
-
+	public static List<String> removeDuplicatedItems(List<String> liste)
+	{
+		Set<String> set = new HashSet<String>() ;
+        	set.addAll(liste) ;
+        	return new ArrayList<String>(set);
+	}
 
 
 	public static void main(String[] args)

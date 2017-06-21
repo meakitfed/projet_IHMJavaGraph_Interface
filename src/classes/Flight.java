@@ -21,6 +21,19 @@ public class Flight
 		this.plane=plane;
 	}
 
+	public String bitMapInfoVol()
+	{
+		String str = "";
+		
+		str+="Identificant : "+ id +
+				"\nDepart : "+departure.getCityName()+
+				"\nArrivé : "+arrival.getCityName()+
+				"\nVitesse : "+(plane.getSpeedX()+plane.getSpeedY())+
+				"\nAltitude : "+plane.getGeolocation().getHeight()+
+				"\nType Avion : "+modelAvion;
+		
+		return str;
+	}
 	@Override
 	public String toString()
 	{

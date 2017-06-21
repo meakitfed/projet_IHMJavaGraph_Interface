@@ -6,16 +6,20 @@ import java.util.ArrayList;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppState;
 import com.jme3.asset.plugins.ZipLocator;
+import com.jme3.font.BitmapFont;
+import com.jme3.font.BitmapText;
+import com.jme3.font.Rectangle;
 import com.jme3.input.ChaseCamera;
-import com.jme3.input.controls.ActionListener;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.BillboardControl;
 import com.jme3.scene.shape.Line;
 import com.jme3.scene.shape.Sphere;
 
@@ -145,6 +149,9 @@ public class EarthTest extends SimpleApplication
 	@Override
 	public void simpleInitApp() 
 	{
+
+		
+		
 		assetManager.registerLocator("earth.zip",ZipLocator.class);
 		
 		Spatial earth_geom =assetManager.loadModel("earth/Sphere.mesh.xml");
@@ -384,11 +391,41 @@ public class EarthTest extends SimpleApplication
 			{
 				suprOtherNodeFlight(controller.getVolSelection().getId());
 				displayPlane(controller.getVolSelection());
+				Node text_node = new Node("texte");
+				BitmapText etiquette = new BitmapText(assetManager.loadFont("Interface/Fonts/Default.fnt"), false);
+				text_node.attachChild(etiquette);
+				rootNode.attachChild(text_node);
+				etiquette.setLocalScale(100);
 			}
 			else 
 			{
 				suprOtherNodeFlight(controller.getVolSelection().getId());
 				displayPlane(controller.getVolSelection());
+				
+				Node n = (Node)((Node)rootNode.getChild(controller.getVolSelection().getId())).getChild("texte");
+				if(n != null)
+				{
+					n.lookAt(cam.getLocation(), cam.getUp());
+				}
+				else
+				{
+					BitmapFont gFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
+					Node text_node = new Node("texte"+controller.getVolSelection().getId());
+					
+					BitmapText etiquette = new BitmapText(gFont, false);
+					
+					etiquette.setText(controller.getVolSelection().bitMapInfoVol());
+					etiquette.setSize(1f);
+					etiquette.setLocalTranslation(0f, 5f, 0f);
+					text_node.attachChild(etiquette);
+					BillboardControl control = new BillboardControl();
+
+					text_node.addControl(control);
+					((Node)rootNode.getChild(controller.getVolSelection().getId())).attachChild(text_node);
+				}
+				
+				
+				
 			}
 			
 		}
