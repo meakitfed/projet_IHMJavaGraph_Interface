@@ -19,7 +19,12 @@ public class Geolocation
 	private static final float DIST_LANDING = 1.f;
 	ArrayList<Geolocation> path = new ArrayList<Geolocation>();
 
-	
+	/**
+	 * constructeur de geolocation
+	 * @param longitude
+	 * @param latitude
+	 * @param height
+	 */
 	public Geolocation(float longitude,float latitude, float height) 
 	{
 		this.latitude=latitude;
@@ -77,11 +82,21 @@ public class Geolocation
 		return "Geolocation [latitude=" + latitude + ", longitude=" + longitude + ", height=" + height + "]";
 	}
 	
+	/**
+	 * retourne la distance entre l'object concerné et la géolocation rentrée en paramètre
+	 * @param other
+	 * @return
+	 */
 	public float distanceTo(Geolocation other)
 	{
 		return (float) Math.sqrt((this.latitude-other.latitude)*(this.latitude-other.latitude) + (this.longitude-other.longitude)*(this.longitude-other.longitude)); 
 	}
 	
+	/**
+	 * retourne oui si deux objects sont proche
+	 * @param other
+	 * @return
+	 */
 	public boolean isCloseTo(Geolocation other)
 	{
 		if (this.distanceTo(other) < DIST_LANDING) return true;

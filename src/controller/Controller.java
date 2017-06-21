@@ -63,7 +63,10 @@ public class Controller
 	}
 	
 	
-	
+	/**
+	 * lit le fichier contenant les données des aéroports et les stocks
+	 * @param path
+	 */
 	public void getAirportData(String path) 
 	{
 		try 
@@ -92,6 +95,10 @@ public class Controller
 		}
 	}
 	
+	/**
+	 * récupère la variable t0 en regardant la première ligne du fichier
+	 * @param path
+	 */
 	public void getT0(String path)
 	{
 		try 
@@ -113,6 +120,11 @@ public class Controller
 		}
 	}
 	
+	/**
+	 * récupère le dernier temp de la dernière update pour pouvoir reprendre à partir de ce temps
+	 * @param path
+	 * @return
+	 */
 	public long getLastUpdateTime(String path)
 	{
 		try 
@@ -409,6 +421,10 @@ public class Controller
 		return toReturn;
 	}
 	
+	/**
+	 * incrémente le temps actuel
+	 * @param nb
+	 */
 	public void incrementCurrentTime(long nb)
 	{
 		this.currentTime += nb;

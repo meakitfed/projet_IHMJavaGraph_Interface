@@ -27,8 +27,6 @@ import com.jme3.scene.shape.Line;
 import com.jme3.scene.shape.Sphere;
 
 import classes.Airport;
-import classes.AirportNode;
-import classes.CountryNode;
 import classes.Flight;
 import classes.Geolocation;
 import controller.Controller;
@@ -43,6 +41,10 @@ public class EarthTest extends SimpleApplication
 	private ArrayList<CountryNode> countryNodes = new ArrayList<CountryNode>();
 	
 	
+	/**
+	 * Constructeur qui lie un controller à l'application
+	 * @param controller
+	 */
 	public EarthTest(Controller controller)
 	{
 		this.controller=controller;
@@ -55,6 +57,9 @@ public class EarthTest extends SimpleApplication
 		// TODO Auto-generated constructor stub
 	}
 	
+	/**
+	 * fonction appelé en boucle qui gère les affichages en fonciton des options choisies
+	 */
 	@Override
 	public void simpleUpdate(float tpf)
 	{
@@ -97,6 +102,11 @@ public class EarthTest extends SimpleApplication
 		
 	}
 
+	/**
+	 * trouve le Node associé à un pays et le renvoie
+	 * @param name
+	 * @return CountryNode : le node du pays recherché ou null s'il n'existe pas
+	 */
 	public CountryNode findCountryNodeNamed(String name)
 	{
 		for(CountryNode c : countryNodes)
@@ -109,6 +119,9 @@ public class EarthTest extends SimpleApplication
 		return null;
 	}
 	
+	/**
+	 * fonction qui initialise les données de l'application (charge la terre...)
+	 */
 	@Override
 	public void simpleInitApp() 
 	{
@@ -150,12 +163,9 @@ public class EarthTest extends SimpleApplication
 		
 		flyCam.setEnabled(false);
 		
-		
 		chaseCam = new ChaseCamera(cam,earth_geom,inputManager);
 		
-
 		chaseCam.setDragToRotate(true);
-		
 		chaseCam.setInvertVerticalAxis(true);
 		chaseCam.setRotationSpeed(10.0f);
 		chaseCam.setMinVerticalRotation((float)-(Math.PI/2-0.0001f));
@@ -182,6 +192,10 @@ public class EarthTest extends SimpleApplication
 		rootNode.attachChild(LinesNode);
 	}
 	
+	/**
+	 * Affiche les trajectoires déjà effectuées à l'aide d'une arrayList de position rentrée
+	 * @param path
+	 */
 	public void drawPath(ArrayList<Geolocation> path)
 	{
 		if(path.size()>0)
@@ -214,6 +228,12 @@ public class EarthTest extends SimpleApplication
 		
 	}
 
+	/**
+	 * traduit les données de géolocalisation en Vector3f pour positionner un objet dans l'espace
+	 * @param lat
+	 * @param lon
+	 * @return Vector3F : les positions de l'objet en question 
+	 */
 	private static Vector3f geoCoordTo3dCoord(float lat, float lon)
 	{
 		float lat_cor = lat+TEXTURE_LAT_OFFSET;
@@ -226,6 +246,13 @@ public class EarthTest extends SimpleApplication
 	}
 	
 	
+	/**
+	 * effectue l'affichage d'un aéroport avec les informations rentrées 
+	 * @param latitude
+	 * @param longitude
+	 * @param shortName
+	 * @param country
+	 */
 	public void displayAirport(float latitude,float longitude,String shortName,String country)
 	{
 		Vector3f v = geoCoordTo3dCoord(latitude, longitude);
@@ -239,14 +266,13 @@ public class EarthTest extends SimpleApplication
 		findCountryNodeNamed(country).findAirportNodeNamed(shortName).attachChild(aeroportGeom);
 		findCountryNodeNamed(country).attachChild(findCountryNodeNamed(country).findAirportNodeNamed(shortName));
 		
-		
-		
-
-		
 		aeroportGeom.setLocalTranslation(v);
 	}
 	
-	
+	/**
+	 * effectue l'affichage d'un avion avec les informations du vol
+	 * @param f
+	 */
 	public void displayPlane(Flight f)
 	{
 		Node n= (Node) rootNode.getChild(f.getId());
@@ -291,6 +317,10 @@ public class EarthTest extends SimpleApplication
  		}
 	}
 
+	/**
+	 * suprime les nodes des aéroports en parcourant les nodes des pays
+	 * (les détaches du rootnNode, ne les supprime pas vraiment)
+	 */
 	public void suprAllAirportNode()
 	{
 		for(CountryNode a : countryNodes)
@@ -299,6 +329,11 @@ public class EarthTest extends SimpleApplication
 		}
 	}
 
+	/**
+	 * suprime les nodes des flight n'ayant pas pour Id celle rentrée en paramètre
+	 * (les détaches du rootnNode, ne les supprime pas vraiment)
+	 * @param id
+	 */
 	public void suprOtherNodeFlight(String id)
 	{
 		for(Flight f : controller.getFlights())
@@ -310,6 +345,10 @@ public class EarthTest extends SimpleApplication
 		}
 	}
 	
+	/**
+	 * permet l'affichage de l'ensemble des avions concernés en fonction des optiosn choisies
+	 * @param flights
+	 */
 	public void paintPlanes(ArrayList<Flight> flights)
 	{
 		if(controller.getVolSelection()==null)
@@ -409,6 +448,11 @@ public class EarthTest extends SimpleApplication
 		}
 		
 	}
+	
+	/**
+	 * permet l'affichage des aéroports en fonction des options choisies
+	 * @param aeroport
+	 */
 	public void paintAirport(ArrayList<Airport> aeroport)
 	{
 		for(Airport a : aeroport)

@@ -11,6 +11,15 @@ public class Flight
 	private long realTime;
 
 	
+	/**
+	 * constructeur d'un vol
+	 * @param id
+	 * @param a1
+	 * @param a2
+	 * @param company
+	 * @param model
+	 * @param plane
+	 */
 	public Flight(String id, Airport a1, Airport a2, String company, String model, Plane plane) 
 	{
 		this.id = id;
@@ -21,6 +30,10 @@ public class Flight
 		this.plane=plane;
 	}
 
+	/**
+	 * renvoie un String contenant les informations du vol organisé pour l'affichage du bitmapText
+	 * @return
+	 */
 	public String bitMapInfoVol()
 	{
 		String str = "";
@@ -121,7 +134,10 @@ public class Flight
 		this.realTime = realTime;
 	}
 	
-	
+	/**
+	 * renvoie si oui ou non un vol est au sol
+	 * @return
+	 */
 	public boolean landed()
 	{
 		if (this.getArrival().getGeolocation().isCloseTo(this.getPlane().getGeolocation())) return true;

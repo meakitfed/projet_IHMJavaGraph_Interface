@@ -7,6 +7,13 @@ public class Airport
 	private String country;
 	private Geolocation geolocation;
 	
+	/**
+	 * constructeur des aéroports
+	 * @param geolocation
+	 * @param cityName
+	 * @param country
+	 * @param shortName
+	 */
 	public Airport(Geolocation geolocation,String cityName,String country,String shortName) 
 	{
 		this.geolocation=geolocation;
