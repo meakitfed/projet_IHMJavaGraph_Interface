@@ -1,6 +1,7 @@
 package tutoriel;
 
 import java.awt.Color;
+import java.awt.event.ActionListener;
 import java.sql.Date;
 import java.util.ArrayList;
 
@@ -57,48 +58,7 @@ public class EarthTest extends SimpleApplication
 	@Override
 	public void simpleUpdate(float tpf)
 	{
-		
-		/*if(controller.isPrintAirport() && !controller.isAlreadyPrintAirport())
-		{
-			suprAllAirportNode();
-			paintAirport(controller.getAirports());
-			controller.setAlreadyPrintAirport(true);
-		}
 		if(controller.isPrintPlane())
-		{
-			if(!controller.isPause())
-			{
-				controller.incrementCurrentTime(10000*controller.getSpeedTime());
-				controller.setD(new Date(controller.getRealCurrentTime()));
-				WindowedTest.getTime().setText("    temps : "+WindowedTest.getShortDateFormat().format(controller.getD()));
-				controller.updateRealTimeFlightsData(controller.getRealTimeFile(), controller.getLastUpdateTime(controller.getRealTimeFile()));
-				paintPlanes(controller.getFlights());
-			}
-			else
-			{
-				paintPlanes(controller.getFlights());	
-			}
-		}
-		else
-		{
-			suprNodeFlight();
-		}*/
-
-		/*if(controller.isPrintOnlyCountry())
-		{
-			Node countryNode = (Node)rootNode.getChild(controller.getCountrySelection());
-			if(countryNode !=null)
-			{
-				
-			}
-		}
-		else
-		{
-			
-		}
-			
-			/////////////////////////
-		*/if(controller.isPrintPlane())
 		{
 			if(!controller.isPause())
 			{
@@ -151,7 +111,7 @@ public class EarthTest extends SimpleApplication
 	@Override
 	public void simpleInitApp() 
 	{
-
+		
 		assetManager.registerLocator("earth.zip",ZipLocator.class);
 		
 		Spatial earth_geom =assetManager.loadModel("earth/Sphere.mesh.xml");

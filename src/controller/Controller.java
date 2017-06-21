@@ -92,7 +92,6 @@ public class Controller
 		}
 	}
 	
-	
 	public void getT0(String path)
 	{
 		try 

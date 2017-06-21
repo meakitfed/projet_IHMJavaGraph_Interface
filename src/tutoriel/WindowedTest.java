@@ -66,7 +66,6 @@ public class WindowedTest
 	
 	private static void createNewJFrame() 
 	{
-
 		frame = new JFrame("Java - Graphique - IHM");
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.addWindowListener(new WindowAdapter()
@@ -77,10 +76,7 @@ public class WindowedTest
 				canvasApplication.stop();
 			}
 		});
-		
-		panel = new JPanel(new BorderLayout());
-		
-		/*panel.addActionListener(new ActionListener()
+		/*canvasApplication.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
@@ -91,10 +87,13 @@ public class WindowedTest
 						{
 							canvasApplication.addHeatMap();
 							return null;
-						}}
-			);
+						});
 			}
 		});*/
+		
+		panel = new JPanel(new BorderLayout());
+		
+		
 
 		// Create the menus
 		JPanel conteneur = new JPanel();
@@ -180,18 +179,7 @@ public class WindowedTest
 				{
 					c.setPlaneView(true);
 					
-					//CameraNode camera = new CameraNode("cam",canvasApplication.getChaseCam());
-					
-					//((Node)canvasApplication.getRootNode().getChild(c.getVolSelection().getId())).attachChild(camera);
-				
-					
-					/*chaseCam.setDragToRotate(false);
-					chaseCam.setInvertVerticalAxis(false);
-					chaseCam.setRotationSpeed(0.0f);
-					chaseCam.setMinVerticalRotation(0);
-					chaseCam.setMaxVerticalRotation(0);
-					chaseCam.setMinDistance(0.5f);
-					chaseCam.setMaxDistance(10f);*/
+
 
 
 					button.setText(" Vue Globale ");
