@@ -1,5 +1,6 @@
 package tutoriel;
 
+import java.awt.Color;
 import java.sql.Date;
 import java.util.ArrayList;
 
@@ -11,6 +12,7 @@ import com.jme3.font.BitmapText;
 import com.jme3.font.Rectangle;
 import com.jme3.input.ChaseCamera;
 import com.jme3.light.DirectionalLight;
+import com.jme3.light.Light;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
@@ -150,11 +152,10 @@ public class EarthTest extends SimpleApplication
 	public void simpleInitApp() 
 	{
 
-		
-		
 		assetManager.registerLocator("earth.zip",ZipLocator.class);
 		
 		Spatial earth_geom =assetManager.loadModel("earth/Sphere.mesh.xml");
+
 		Node earth_node = new Node("earth");
 		earth_node.attachChild(earth_geom);
 		earth_node.setLocalScale(5.0f);
@@ -240,8 +241,8 @@ public class EarthTest extends SimpleApplication
 			Material mat2 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
 			lineGeo.setMaterial(mat2);						
 			mat.getAdditionalRenderState().setLineWidth(4.0f);
-			mat.setColor("Color",ColorRGBA.randomColor());
-			mat2.setColor("Color",ColorRGBA.randomColor());
+
+			mat2.setColor("Color",ColorRGBA.Magenta);
 			pathNode.setMaterial(mat);
 			pathNode.attachChild(lineGeo);
 			allPathNode.attachChild(pathNode);
@@ -402,27 +403,30 @@ public class EarthTest extends SimpleApplication
 				suprOtherNodeFlight(controller.getVolSelection().getId());
 				displayPlane(controller.getVolSelection());
 				
-				Node n = (Node)((Node)rootNode.getChild(controller.getVolSelection().getId())).getChild("texte");
-				if(n != null)
+				if(((Node)rootNode.getChild(controller.getVolSelection().getId()))!=null)
 				{
-					n.lookAt(cam.getLocation(), cam.getUp());
+					Node n = (Node)((Node)rootNode.getChild(controller.getVolSelection().getId())).getChild("texte");
+					if(n == null)
+					{
+						BitmapFont gFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
+						Node text_node = new Node("texte"+controller.getVolSelection().getId());
+						
+						BitmapText etiquette = new BitmapText(gFont, false);
+						
+						etiquette.setColor(ColorRGBA.Blue);
+						etiquette.setText(controller.getVolSelection().bitMapInfoVol());
+						etiquette.setSize(gFont.getCharSet().getRenderedSize());
+						etiquette.scale(0.10f);
+						etiquette.setLocalTranslation(0f, 5f, 0f);
+						etiquette.setLocalTranslation(1f, -2f, 4f);
+						text_node.attachChild(etiquette);
+						BillboardControl control = new BillboardControl();
+						text_node.addControl(control);
+						
+						((Node)rootNode.getChild(controller.getVolSelection().getId())).attachChild(text_node);
+					}
 				}
-				else
-				{
-					BitmapFont gFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
-					Node text_node = new Node("texte"+controller.getVolSelection().getId());
-					
-					BitmapText etiquette = new BitmapText(gFont, false);
-					
-					etiquette.setText(controller.getVolSelection().bitMapInfoVol());
-					etiquette.setSize(1f);
-					etiquette.setLocalTranslation(0f, 5f, 0f);
-					text_node.attachChild(etiquette);
-					BillboardControl control = new BillboardControl();
-
-					text_node.addControl(control);
-					((Node)rootNode.getChild(controller.getVolSelection().getId())).attachChild(text_node);
-				}
+				
 				
 				
 				
