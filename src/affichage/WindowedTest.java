@@ -38,10 +38,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import com.jme3.font.BitmapText;
-import com.jme3.input.ChaseCamera;
-import com.jme3.scene.CameraNode;
-import com.jme3.scene.Node;
+
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeCanvasContext;
 
@@ -60,13 +57,14 @@ public class WindowedTest {
 	private static Controller c;
 	private static DateFormat shortDateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
 	private static JLabel time = new JLabel();
-	private static JList selection;
+	private static JList<String> selection;
 	private static JPanel informationVolSelection;
 
 	/**
 	 * Fonction qui crée et initialise la JRame principale et dispose l'ensemble des panels et boutons à gauche
 	 * en plus de créer les Listener allant avec
 	 */
+	
 	private static void createNewJFrame() {
 		frame = new JFrame("Java - Graphique - IHM");
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -140,8 +138,8 @@ public class WindowedTest {
 		volSelection.setPreferredSize(new Dimension(200, 130));
 		volSelection.setBorder(BorderFactory.createTitledBorder("Selection Vol"));
 
-		DefaultListModel dlm = new DefaultListModel();
-		selection = new JList(dlm);
+		DefaultListModel<String> dlm = new DefaultListModel<String>();
+		selection = new JList<String>(dlm);
 		dlm.addElement("Aucune sélection");
 
 		for (Flight f : c.getFlights()) {
@@ -515,8 +513,8 @@ public class WindowedTest {
 
 	/**
 	 * Fonction qui à partir d'une liste enlève les doublons qu'il y a dedans 
-	 * @param liste
-	 * @return List<String> sans les doublons 
+	 * @param liste une liste de String
+	 * @return nouvelle liste snas doublons
 	 */
 	public static List<String> removeDuplicatedItems(List<String> liste) 
 	{

@@ -1,6 +1,5 @@
 package affichage;
 
-import java.util.ArrayList;
 
 import com.jme3.scene.Node;
 

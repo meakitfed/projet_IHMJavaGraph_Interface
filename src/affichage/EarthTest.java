@@ -1,7 +1,6 @@
 package affichage;
 
-import java.awt.Color;
-import java.awt.event.ActionListener;
+
 import java.sql.Date;
 import java.util.ArrayList;
 
@@ -10,15 +9,15 @@ import com.jme3.app.state.AppState;
 import com.jme3.asset.plugins.ZipLocator;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
-import com.jme3.font.Rectangle;
+
 import com.jme3.input.ChaseCamera;
 import com.jme3.light.DirectionalLight;
-import com.jme3.light.Light;
+
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue.Bucket;
+
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -82,6 +81,7 @@ public class EarthTest extends SimpleApplication
 		{
 			suprOtherNodeFlight(null);
 		}
+
 		if(controller.getVolSelection()!=null && controller.isPrintPathPlane() )
 		{
 			if(rootNode.getChild("path")!=null)
@@ -359,7 +359,10 @@ public class EarthTest extends SimpleApplication
 				{
 					if(controller.isPrintOnlyCountry())
 					{
-						
+						if(rootNode.getChild("path")!=null)
+						{
+							rootNode.getChild("path").removeFromParent();
+						}
 						if(controller.getCountrySelection()!= null  && 
 								(f.getArrival().getCountry().equals(controller.getCountrySelection())|| controller.getCountrySelection().equals(f.getDeparture().getCountry())))
 						{
@@ -377,6 +380,10 @@ public class EarthTest extends SimpleApplication
 					}
 					else if(controller.isPrintOnlyAirport())
 					{
+						if(rootNode.getChild("path")!=null)
+						{
+							rootNode.getChild("path").removeFromParent();
+						}
 						if(controller.getAirportSelection()!= null  && 
 								(f.getArrival().getShortName().equals(controller.getAirportSelection())) || f.getDeparture().getShortName().equals(controller.getAirportSelection()))
 						{

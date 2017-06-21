@@ -1,6 +1,6 @@
 package controller;
 
-import java.awt.List;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -212,7 +212,6 @@ public class Controller
 						{
 							if(f.getId().equals(array[1].trim()))
 							{
-								f.setRealTime(currentTime - t0);
 								f.getPlane().getGeolocation().setHeight(height);
 								f.getPlane().getGeolocation().setLatitude(lat);
 								f.getPlane().getGeolocation().setLongitude(lon);

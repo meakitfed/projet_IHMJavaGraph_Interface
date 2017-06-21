@@ -8,7 +8,6 @@ public class Flight
 	private Airport departure;
 	private String company;
 	private String id;
-	private long realTime;
 
 	
 	/**
@@ -126,13 +125,6 @@ public class Flight
 		return plane;
 	}
 
-	/**
-	 * @param realTime the realTime to set
-	 */
-	public void setRealTime(long realTime) 
-	{
-		this.realTime = realTime;
-	}
 	
 	/**
 	 * renvoie si oui ou non un vol est au sol
